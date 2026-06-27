@@ -2,12 +2,14 @@
 
 Este archivo registra los modos de falla que aparecen al usar IA para generar pruebas y revisar codigo en `payments-svc`.
 
+En `n1` se ejecuto dos veces el prompt ingenuo `Escribe los tests para amounts.py`: una durante la rama de video y otra en una rama temporal de validacion. Las suites generadas no fueron identicas, pero repitieron el mismo patron: mucho codigo de test plausible, dependencia en `pytest`, cobertura de helpers internos y aceptacion de la implementacion actual como contrato.
+
 ## Categoria: Generacion de tests
 
-- [n1] La IA genera una suite que se ve completa, pero acepta la implementacion actual como contrato. Ejemplo: trata `calculate_fee(Decimal("0.00"), "USD") == Decimal("0.00")` como comportamiento esperado, aunque el contrato de negocio todavia debe discutirse.
+- [n1] La IA genera suites que se ven completas, pero aceptan la implementacion actual como contrato. En ambas corridas trato `calculate_fee(Decimal("0.00"), "USD") == Decimal("0.00")` como comportamiento esperado, aunque el contrato de negocio todavia debe discutirse.
 - [n1] La IA cubre muchos casos nominales y de error, pero no distingue entre "esto pasa hoy" y "esto debe pasar". Ese salto convierte bugs sembrados en especificacion accidental.
-- [n1] La IA introduce dependencias y estilo de test no pedidos. Ejemplo: usa `pytest`, aunque el plan del modulo propone empezar con comandos simples de `unittest`.
-- [n1] La IA prueba helpers internos y constantes, pero no siempre valida los contratos de negocio relevantes para pagos: fee minimo, fronteras exactas, montos maximos combinados con fee y reglas de redondeo desde la perspectiva del producto.
+- [n1] La IA introduce dependencias y estilo de test no pedidos. En las dos corridas uso `pytest`, aunque el plan del modulo propone empezar con comandos simples de `unittest`.
+- [n1] La IA prueba helpers internos y constantes en ambas corridas, pero no siempre valida los contratos de negocio relevantes para pagos: fee minimo, fronteras exactas, montos maximos combinados con fee y reglas de redondeo desde la perspectiva del producto.
 - [n1] La IA no deja una trazabilidad clara entre cada test y un modo de falla. Sin catalogo previo, no sabemos que casos faltan, cuales sobran ni que riesgo cubre cada prueba.
 
 ## Categoria: Revision de codigo
