@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from decimal import Decimal, InvalidOperation, ROUND_HALF_EVEN
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from typing import Final
 
 
@@ -28,8 +28,14 @@ class CurrencyError(ValueError):
     """Raised when a currency is missing or unsupported."""
 
 
-def parse_amount(raw: str | int | float | Decimal) -> Decimal:
+def parse_amount(raw: str | int | Decimal) -> Decimal:
     if raw is None:
+        raise AmountError("amount is required")
+
+    if isinstance(raw, float):
+        raise AmountError("amount must be numeric")
+
+    if isinstance(raw, str) and not raw.strip():
         raise AmountError("amount is required")
 
     try:
@@ -58,7 +64,7 @@ def normalize_currency(currency: str) -> str:
 
 
 def validate_amount(amount: Decimal) -> None:
-    if amount < Decimal("0"):
+    if amount <= Decimal("0"):
         raise AmountError("amount cannot be negative")
 
     if amount > MAX_AMOUNT:
@@ -66,15 +72,12 @@ def validate_amount(amount: Decimal) -> None:
 
 
 def round_money(value: Decimal) -> Decimal:
-    return value.quantize(CENT, rounding=ROUND_HALF_EVEN)
+    return value.quantize(CENT, rounding=ROUND_HALF_UP)
 
 
 def calculate_fee(amount: Decimal, currency: str) -> Decimal:
     currency = normalize_currency(currency)
     validate_amount(amount)
-
-    if amount == Decimal("0"):
-        return Decimal("0.00")
 
     percentage_fee = amount * FEE_RATES[currency]
     fee = max(percentage_fee, MINIMUM_FEES[currency])
