@@ -15,9 +15,8 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "mutmut>=3.2",
+    "cosmic-ray>=8.4",
 ]
 
 [tool.setuptools.packages.find]
 where = ["src"]
-
