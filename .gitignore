@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .mutmut-cache/
+mutation.sqlite
 htmlcov/
 .coverage
 dist/
