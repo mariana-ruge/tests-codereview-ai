@@ -4,6 +4,7 @@ __pycache__/
 .pytest_cache/
 .mutmut-cache/
 mutation.sqlite
+mutation-*.sqlite
 htmlcov/
 .coverage
 dist/
