@@ -2,7 +2,7 @@
 module-path = "src/payments_svc/refunds.py"
 timeout = 10.0
 excluded-modules = []
-test-command = "\"C:\\Users\\jsrso\\projects\\Platzi\\Pruebas IA\\payments-svc\\.venv\\Scripts\\python.exe\" -m unittest tests.test_refunds -v"
+test-command = "\"C:\\Users\\jsrso\\projects\\Platzi\\Pruebas IA\\payments-svc\\.venv\\Scripts\\python.exe\" -m unittest tests.test_refunds_before -v"
 
 [cosmic-ray.distributor]
 name = "local"
