@@ -6,21 +6,21 @@ El proyecto esta preparado para avanzar por incrementos de clase. La base inicia
 
 ## Instalacion
 
-```powershell
+```sh
 python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+source .venv/bin/activate
 pip install -e .[dev]
 ```
 
 ## Smoke test
 
-```powershell
+```sh
 python scripts/smoke_test.py
 ```
 
 ## API local
 
-```powershell
+```sh
 uvicorn payments_svc.api:app --reload
 ```
 
