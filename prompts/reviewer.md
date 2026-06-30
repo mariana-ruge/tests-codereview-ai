@@ -19,14 +19,54 @@ Reporta solo hallazgos accionables y relacionados con el cambio.
 5. Estilo - legibilidad, nombres y mantenibilidad. Severidad baja.
 6. Documentacion - cambios publicos sin documentacion suficiente.
 
+## Salida obligatoria
+
+Devuelve solo JSON valido.
+No agregues Markdown.
+No agregues explicaciones fuera del JSON.
+
+La salida debe ser una lista de hallazgos.
+Si no hay hallazgos, devuelve una lista vacia: `[]`.
+
+Cada hallazgo debe cumplir este esquema:
+
+```json
+{
+  "rule_id": "SEC-AUTHZ-001",
+  "category": "security",
+  "severity": "blocker",
+  "location": {
+    "file": "src/payments_svc/api.py",
+    "line": 96
+  },
+  "message": "Endpoint sin verificacion de autorizacion",
+  "suggested_fix": "Validar permisos antes de procesar el refund"
+}
+```
+
+Valores permitidos para `category`:
+
+- `correctness`
+- `security`
+- `performance`
+- `tests`
+- `style`
+- `documentation`
+
+Valores permitidos para `severity`:
+
+- `blocker`
+- `advisory`
+- `info`
+
 ## Instruccion
 
 Para cada categoria:
 
-- indica si hay hallazgos
-- si hay hallazgos, cita archivo y linea
-- explica por que importa
-- sugiere una correccion breve
+- si hay un hallazgo accionable, agrega un objeto JSON
+- cita archivo y linea en `location`
+- explica por que importa en `message`
+- sugiere una correccion breve en `suggested_fix`
 
 No inventes archivos ni lineas.
-Si una categoria no tiene hallazgos claros, escribe "sin hallazgos".
+Si una categoria no tiene hallazgos claros, no agregues hallazgo para esa categoria.
