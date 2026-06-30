@@ -34,6 +34,14 @@ cr-report mutation-amounts.sqlite
 cosmic-ray init --force cosmic-ray-refunds.toml mutation-refunds.sqlite
 cosmic-ray exec cosmic-ray-refunds.toml mutation-refunds.sqlite
 cr-report mutation-refunds.sqlite
+
+cosmic-ray init --force cosmic-ray-auth.toml mutation-auth.sqlite
+cosmic-ray exec cosmic-ray-auth.toml mutation-auth.sqlite
+cr-report mutation-auth.sqlite
+
+cosmic-ray init --force cosmic-ray-api.toml mutation-api.sqlite
+cosmic-ray exec cosmic-ray-api.toml mutation-api.sqlite
+cr-report mutation-api.sqlite
 ```
 
 ## API local

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import StrEnum
+from typing import Optional
 
 
 class Role(StrEnum):
@@ -17,7 +18,7 @@ class User:
     account_id: str
 
 
-def require_authenticated(user: User | None) -> User:
+def require_authenticated(user: Optional[User]) -> User:
     if user is None:
         raise PermissionError("authentication required")
 
@@ -31,4 +32,3 @@ def can_refund(user: User, account_id: str) -> bool:
         return True
 
     return user.account_id == account_id
-

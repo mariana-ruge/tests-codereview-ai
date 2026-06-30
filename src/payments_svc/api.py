@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from decimal import Decimal
+from typing import Optional
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
@@ -39,7 +39,7 @@ class RefundRequest(BaseModel):
 class RefundResponse(BaseModel):
     status: str
     amount: str
-    reason: str | None
+    reason: Optional[str]
 
 
 @app.get("/health")
@@ -68,14 +68,14 @@ def create_payment(payload: PaymentRequest) -> PaymentResponse:
 def create_refund(payload: RefundRequest) -> RefundResponse:
     try:
         decision = request_refund(
-            original_amount=Decimal(payload.original_amount),
-            refund_amount=Decimal(payload.refund_amount),
-            already_refunded=Decimal(payload.already_refunded),
+            original_amount=parse_amount(payload.original_amount),
+            refund_amount=parse_amount(payload.refund_amount),
+            already_refunded=parse_amount(payload.already_refunded),
         )
     except AmountError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
-    status_code = 200 if decision.status is RefundStatus.APPROVED else 400
+    status_code = 200 if decision.status == RefundStatus.APPROVED else 400
     if status_code >= 400:
         raise HTTPException(status_code=status_code, detail=decision.reason)
 
