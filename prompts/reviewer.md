@@ -21,9 +21,13 @@ Reporta solo hallazgos accionables y relacionados con el cambio.
 
 ## Salida obligatoria
 
-Devuelve solo JSON valido.
-No agregues Markdown.
-No agregues explicaciones fuera del JSON.
+Crea un archivo JSON dentro de `samples/reviews/`.
+El nombre del archivo debe describir el PR revisado en kebab-case y terminar en `.json`.
+Ejemplo de nombre: `manual-refund-review.json`.
+
+El contenido del archivo debe ser solo JSON valido.
+No agregues Markdown dentro del archivo.
+No agregues explicaciones fuera del JSON dentro del archivo.
 
 La salida debe ser una lista de hallazgos.
 Si no hay hallazgos, devuelve una lista vacia: `[]`.
