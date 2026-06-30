@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
-from typing import Final
+from typing import Final, Union
 
 
 CENT: Final = Decimal("0.01")
@@ -28,7 +28,7 @@ class CurrencyError(ValueError):
     """Raised when a currency is missing or unsupported."""
 
 
-def parse_amount(raw: str | int | Decimal) -> Decimal:
+def parse_amount(raw: Union[str, int, Decimal]) -> Decimal:
     if raw is None:
         raise AmountError("amount is required")
 
