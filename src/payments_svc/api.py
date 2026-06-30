@@ -36,6 +36,13 @@ class RefundRequest(BaseModel):
     already_refunded: str = "0.00"
 
 
+class ManualRefundRequest(BaseModel):
+    original_amount: str
+    refund_amount: str
+    already_refunded: str = "0.00"
+    reason: str | None = None
+
+
 class RefundResponse(BaseModel):
     status: str
     amount: str
@@ -85,3 +92,22 @@ def create_refund(payload: RefundRequest) -> RefundResponse:
         reason=decision.reason,
     )
 
+
+@app.post("/accounts/{account_id}/manual-refunds", response_model=RefundResponse)
+def create_manual_refund(
+    account_id: str,
+    payload: ManualRefundRequest,
+) -> RefundResponse:
+    try:
+        decision = request_refund(
+            original_amount=Decimal(payload.original_amount),
+            refund_amount=Decimal(payload.refund_amount),
+        )
+    except AmountError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    return RefundResponse(
+        status=decision.status.value,
+        amount=str(decision.amount),
+        reason=payload.reason or decision.reason,
+    )
