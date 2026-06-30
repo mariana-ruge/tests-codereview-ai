@@ -5,7 +5,7 @@
     "severity": "blocker",
     "location": {
       "file": "src/payments_svc/api.py",
-      "line": 104
+      "line": 127
     },
     "message": "The admin refund endpoint constructs an admin user from request data instead of requiring an authenticated caller.",
     "suggested_fix": "Require an authenticated user from the request context and verify that the caller can refund the target account."
@@ -16,7 +16,7 @@
     "severity": "blocker",
     "location": {
       "file": "src/payments_svc/api.py",
-      "line": 109
+      "line": 132
     },
     "message": "The endpoint sets already_refunded to 0.00, so partially refunded payments can be over-refunded.",
     "suggested_fix": "Pass the current already_refunded amount from trusted payment state into request_refund."
@@ -27,7 +27,7 @@
     "severity": "info",
     "location": {
       "file": "src/payments_svc/api.py",
-      "line": 101
+      "line": 125
     },
     "message": "The function name repeats the route intent and could be shorter.",
     "suggested_fix": "Consider a shorter name only if it improves consistency with neighboring handlers."
@@ -38,7 +38,7 @@
     "severity": "blocker",
     "location": {
       "file": "web/src/refunds.ts",
-      "line": 20
+      "line": 23
     },
     "message": "The client converts a money string through Number, which can lose precision and alter formatting before sending it to the API.",
     "suggested_fix": "Send the original decimal string and let the API parse and validate money."
@@ -49,7 +49,7 @@
     "severity": "advisory",
     "location": {
       "file": "web/src/refunds.ts",
-      "line": 26
+      "line": 29
     },
     "message": "Failed responses are returned as if they were successful RefundResponse values.",
     "suggested_fix": "Throw or return a typed error result when response.ok is false."
@@ -60,7 +60,7 @@
     "severity": "info",
     "location": {
       "file": "web/src/refunds.ts",
-      "line": 34
+      "line": 36
     },
     "message": "The status formatter couples API field naming directly to UI text.",
     "suggested_fix": "Map API fields to a view model before formatting UI text."

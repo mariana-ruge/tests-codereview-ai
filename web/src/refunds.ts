@@ -7,7 +7,7 @@ type RefundRequest = {
 
 type RefundResponse = {
   status: string
-  refundable_amount: string
+  amount: string
   reason?: string
 }
 
@@ -33,5 +33,5 @@ export async function submitManualRefund(input: RefundRequest): Promise<RefundRe
 }
 
 export function formatRefundStatus(response: RefundResponse): string {
-  return `${response.status}: ${response.refundable_amount}`
+  return `${response.status}: ${response.amount}`
 }

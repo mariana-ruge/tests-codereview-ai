@@ -1,34 +1,40 @@
 diff --git a/src/payments_svc/api.py b/src/payments_svc/api.py
-index 3e5fcb2..a24c891 100644
+index 69d8888..b0cbcd7 100644
 --- a/src/payments_svc/api.py
 +++ b/src/payments_svc/api.py
-@@ -1,7 +1,8 @@
- from decimal import Decimal
+@@ -1,10 +1,12 @@
+ from __future__ import annotations
+ 
++from decimal import Decimal
  from typing import Optional
  
  from fastapi import FastAPI, HTTPException
-+from payments_svc.auth import User
  from pydantic import BaseModel
  
- from payments_svc.amounts import AmountError, CurrencyError, calculate_total, parse_amount
-@@ -54,6 +55,13 @@ class RefundRequest(BaseModel):
-     already_refunded: str = "0.00"
++from payments_svc.auth import User
+ from payments_svc.amounts import (
+     AmountError,
+     CurrencyError,
+@@ -43,6 +45,13 @@ class ManualRefundRequest(BaseModel):
+     reason: str | None = None
  
  
 +class AdminRefundRequest(BaseModel):
 +    payment_id: str
 +    account_id: str
 +    amount: str
-+    reason: Optional[str] = None
++    reason: str | None = None
 +
 +
  class RefundResponse(BaseModel):
      status: str
-     refundable_amount: str
-@@ -93,6 +101,24 @@ def create_refund(payload: RefundRequest) -> RefundResponse:
-         raise HTTPException(status_code=400, detail=str(exc)) from exc
- 
- 
+     amount: str
+@@ -111,3 +120,22 @@ def create_manual_refund(
+         amount=str(decision.amount),
+         reason=payload.reason or decision.reason,
+     )
++
++
 +@app.post("/admin/refunds", response_model=RefundResponse)
 +def create_admin_refund(payload: AdminRefundRequest) -> RefundResponse:
 +    user = User(id="system", account_id=payload.account_id, role="admin")
@@ -43,20 +49,15 @@ index 3e5fcb2..a24c891 100644
 +
 +    return RefundResponse(
 +        status=decision.status.value,
-+        refundable_amount=str(decision.refundable_amount),
-+        reason=payload.reason,
++        amount=str(decision.amount),
++        reason=payload.reason or decision.reason,
 +    )
-+
-+
- @app.get("/health")
- def health() -> dict[str, str]:
-     return {"status": "ok"}
 diff --git a/web/src/refunds.ts b/web/src/refunds.ts
 new file mode 100644
-index 0000000..41c37cd
+index 0000000..2b2df9d
 --- /dev/null
 +++ b/web/src/refunds.ts
-@@ -0,0 +1,35 @@
+@@ -0,0 +1,37 @@
 +type RefundRequest = {
 +  paymentId: string
 +  accountId: string
@@ -66,7 +67,7 @@ index 0000000..41c37cd
 +
 +type RefundResponse = {
 +  status: string
-+  refundable_amount: string
++  amount: string
 +  reason?: string
 +}
 +
@@ -92,14 +93,14 @@ index 0000000..41c37cd
 +}
 +
 +export function formatRefundStatus(response: RefundResponse): string {
-+  return `${response.status}: ${response.refundable_amount}`
++  return `${response.status}: ${response.amount}`
 +}
 diff --git a/.github/workflows/review.yml b/.github/workflows/review.yml
 new file mode 100644
 index 0000000..55cfcf4
 --- /dev/null
 +++ b/.github/workflows/review.yml
-@@ -0,0 +1,24 @@
+@@ -0,0 +1,23 @@
 +name: ai-review
 +
 +on:

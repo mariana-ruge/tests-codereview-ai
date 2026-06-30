@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+from decimal import Decimal
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
+from payments_svc.auth import User
 from payments_svc.amounts import (
     AmountError,
     CurrencyError,
@@ -40,6 +42,13 @@ class ManualRefundRequest(BaseModel):
     original_amount: str
     refund_amount: str
     already_refunded: str = "0.00"
+    reason: str | None = None
+
+
+class AdminRefundRequest(BaseModel):
+    payment_id: str
+    account_id: str
+    amount: str
     reason: str | None = None
 
 
@@ -102,6 +111,25 @@ def create_manual_refund(
         decision = request_refund(
             original_amount=Decimal(payload.original_amount),
             refund_amount=Decimal(payload.refund_amount),
+        )
+    except AmountError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    return RefundResponse(
+        status=decision.status.value,
+        amount=str(decision.amount),
+        reason=payload.reason or decision.reason,
+    )
+
+
+@app.post("/admin/refunds", response_model=RefundResponse)
+def create_admin_refund(payload: AdminRefundRequest) -> RefundResponse:
+    user = User(id="system", account_id=payload.account_id, role="admin")
+    try:
+        decision = request_refund(
+            original_amount=parse_amount(payload.amount),
+            refund_amount=parse_amount(payload.amount),
+            already_refunded=Decimal("0.00"),
         )
     except AmountError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
