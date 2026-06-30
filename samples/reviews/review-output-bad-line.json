@@ -1,0 +1,13 @@
+[
+  {
+    "rule_id": "SEC-AUTHZ-001",
+    "category": "security",
+    "severity": "blocker",
+    "location": {
+      "file": "src/payments_svc/api.py",
+      "line": "foo"
+    },
+    "message": "Manual refunds can be created without checking authentication or authorization.",
+    "suggested_fix": "Require an authenticated user and verify refund permissions for the account before calling request_refund."
+  }
+]

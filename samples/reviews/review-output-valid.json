@@ -1,0 +1,35 @@
+[
+  {
+    "rule_id": "SEC-AUTHZ-001",
+    "category": "security",
+    "severity": "blocker",
+    "location": {
+      "file": "src/payments_svc/api.py",
+      "line": 96
+    },
+    "message": "Manual refunds can be created without checking authentication or authorization.",
+    "suggested_fix": "Require an authenticated user and verify refund permissions for the account before calling request_refund."
+  },
+  {
+    "rule_id": "COR-REFUND-001",
+    "category": "correctness",
+    "severity": "blocker",
+    "location": {
+      "file": "src/payments_svc/api.py",
+      "line": 101
+    },
+    "message": "The endpoint receives already_refunded but does not pass it to request_refund, so it can over-refund partially refunded payments.",
+    "suggested_fix": "Pass already_refunded=Decimal(payload.already_refunded) when requesting the refund decision."
+  },
+  {
+    "rule_id": "TEST-MISSING-001",
+    "category": "tests",
+    "severity": "advisory",
+    "location": {
+      "file": "tests",
+      "line": 1
+    },
+    "message": "The PR adds a public endpoint but does not add API tests for authorization or partially refunded payments.",
+    "suggested_fix": "Add tests for unauthorized manual refunds and refunds that exceed the remaining refundable amount."
+  }
+]
