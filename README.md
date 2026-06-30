@@ -2,7 +2,7 @@
 
 API de pagos en Python para el curso de Platzi sobre testing y code review con IA.
 
-El proyecto esta preparado para avanzar por incrementos de clase. La base inicial debe funcionar, pero conserva comportamientos ambiguos y bugs sembrados para que los videos puedan mostrar como la IA genera, evalua y mejora pruebas.
+El proyecto esta preparado para avanzar por incrementos de clase. Para el Modulo B parte de una base limpia: `amounts.py` y `refunds.py` tienen contratos confirmados, tests unitarios y una configuracion reproducible de mutation testing.
 
 ## Instalacion
 
@@ -12,10 +12,24 @@ python -m venv .venv
 pip install -e .[dev]
 ```
 
+## Tests
+
+```powershell
+python -m unittest tests.test_amounts tests.test_refunds -v
+```
+
 ## Smoke test
 
 ```powershell
 python scripts/smoke_test.py
+```
+
+## Mutation testing
+
+```powershell
+cosmic-ray init cosmic-ray.toml mutation.sqlite
+cosmic-ray exec cosmic-ray.toml mutation.sqlite
+cr-report mutation.sqlite
 ```
 
 ## API local
@@ -24,15 +38,9 @@ python scripts/smoke_test.py
 uvicorn payments_svc.api:app --reload
 ```
 
-Endpoints iniciales:
+Endpoints:
 
 - `GET /health`
 - `POST /payments`
 - `POST /refunds`
-
-## Notas para el curso
-
-- No hay suite unitaria completa en la base inicial.
-- `amounts.py` es el modulo principal para generar tests durante el Modulo A.
-- `FAILURE-MODES.md` se crea durante la Clase 01, no antes.
 

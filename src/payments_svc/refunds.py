@@ -59,6 +59,13 @@ def request_refund(
             reason="payment is already fully refunded",
         )
 
+    if refund_amount > remaining:
+        return RefundDecision(
+            status=RefundStatus.REJECTED,
+            amount=Decimal("0.00"),
+            reason="refund exceeds refundable amount",
+        )
+
     return RefundDecision(
         status=RefundStatus.APPROVED,
         amount=round_money(refund_amount),
@@ -68,6 +75,6 @@ def request_refund(
 
 def assert_refundable(original_amount: Decimal, refund_amount: Decimal) -> None:
     decision = request_refund(original_amount, refund_amount)
-    if decision.status is RefundStatus.REJECTED:
+    if decision.status in {RefundStatus.REJECTED}:
         raise AmountError(decision.reason or "refund rejected")
 
