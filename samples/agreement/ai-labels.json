@@ -1,0 +1,146 @@
+{
+  "source": "ai",
+  "description": "Etiquetas normalizadas desde la salida del revisor ruteado.",
+  "labels": [
+    {
+      "case_id": "manual-refund-admin",
+      "category": "security",
+      "present": true,
+      "severity": "blocker",
+      "notes": "Detecta ausencia de autenticacion real en endpoint admin."
+    },
+    {
+      "case_id": "manual-refund-admin",
+      "category": "correctness",
+      "present": true,
+      "severity": "blocker",
+      "notes": "Detecta riesgo de sobre-reembolso por already_refunded fijo."
+    },
+    {
+      "case_id": "manual-refund-admin",
+      "category": "tests",
+      "present": false,
+      "severity": null,
+      "notes": "No reporta pruebas faltantes para este caso."
+    },
+    {
+      "case_id": "manual-refund-admin",
+      "category": "documentation",
+      "present": false,
+      "severity": null,
+      "notes": "No reporta falta de documentacion del endpoint."
+    },
+    {
+      "case_id": "client-refund-money",
+      "category": "security",
+      "present": false,
+      "severity": null,
+      "notes": "No reporta seguridad en cliente."
+    },
+    {
+      "case_id": "client-refund-money",
+      "category": "correctness",
+      "present": true,
+      "severity": "blocker",
+      "notes": "Detecta conversion de dinero con Number."
+    },
+    {
+      "case_id": "client-refund-money",
+      "category": "tests",
+      "present": false,
+      "severity": null,
+      "notes": "No reporta pruebas faltantes para errores HTTP."
+    },
+    {
+      "case_id": "client-refund-money",
+      "category": "documentation",
+      "present": false,
+      "severity": null,
+      "notes": "No reporta documentacion."
+    },
+    {
+      "case_id": "workflow-review-permissions",
+      "category": "security",
+      "present": true,
+      "severity": "blocker",
+      "notes": "Detecta permisos amplios y exposicion de token."
+    },
+    {
+      "case_id": "workflow-review-permissions",
+      "category": "correctness",
+      "present": false,
+      "severity": null,
+      "notes": "No reporta correccion de negocio."
+    },
+    {
+      "case_id": "workflow-review-permissions",
+      "category": "tests",
+      "present": false,
+      "severity": null,
+      "notes": "No reporta pruebas."
+    },
+    {
+      "case_id": "workflow-review-permissions",
+      "category": "documentation",
+      "present": false,
+      "severity": null,
+      "notes": "No reporta documentacion."
+    },
+    {
+      "case_id": "refund-boundary-tests",
+      "category": "security",
+      "present": false,
+      "severity": null,
+      "notes": "No reporta seguridad."
+    },
+    {
+      "case_id": "refund-boundary-tests",
+      "category": "correctness",
+      "present": true,
+      "severity": "advisory",
+      "notes": "Marca posible ambiguedad de regla aunque el humano la acepta."
+    },
+    {
+      "case_id": "refund-boundary-tests",
+      "category": "tests",
+      "present": true,
+      "severity": "advisory",
+      "notes": "Detecta pruebas faltantes de borde."
+    },
+    {
+      "case_id": "refund-boundary-tests",
+      "category": "documentation",
+      "present": false,
+      "severity": null,
+      "notes": "No reporta documentacion."
+    },
+    {
+      "case_id": "readme-admin-docs",
+      "category": "security",
+      "present": false,
+      "severity": null,
+      "notes": "No reporta seguridad."
+    },
+    {
+      "case_id": "readme-admin-docs",
+      "category": "correctness",
+      "present": false,
+      "severity": null,
+      "notes": "No reporta correccion."
+    },
+    {
+      "case_id": "readme-admin-docs",
+      "category": "tests",
+      "present": false,
+      "severity": null,
+      "notes": "No reporta pruebas."
+    },
+    {
+      "case_id": "readme-admin-docs",
+      "category": "documentation",
+      "present": true,
+      "severity": "advisory",
+      "notes": "Detecta documentacion insuficiente del endpoint."
+    }
+  ]
+}

@@ -1,0 +1,146 @@
+{
+  "source": "human",
+  "description": "Etiquetas humanas preparadas para calibrar el revisor ruteado.",
+  "labels": [
+    {
+      "case_id": "manual-refund-admin",
+      "category": "security",
+      "present": true,
+      "severity": "blocker",
+      "notes": "El endpoint admin construye un usuario privilegiado sin autenticar al caller."
+    },
+    {
+      "case_id": "manual-refund-admin",
+      "category": "correctness",
+      "present": true,
+      "severity": "blocker",
+      "notes": "El endpoint ignora refunds previos y puede sobre-reembolsar."
+    },
+    {
+      "case_id": "manual-refund-admin",
+      "category": "tests",
+      "present": true,
+      "severity": "advisory",
+      "notes": "Faltan pruebas para permisos y refunds parciales."
+    },
+    {
+      "case_id": "manual-refund-admin",
+      "category": "documentation",
+      "present": true,
+      "severity": "advisory",
+      "notes": "El endpoint publico nuevo no documenta autenticacion ni contrato."
+    },
+    {
+      "case_id": "client-refund-money",
+      "category": "security",
+      "present": false,
+      "severity": null,
+      "notes": "No hay hallazgo de seguridad claro en el cliente."
+    },
+    {
+      "case_id": "client-refund-money",
+      "category": "correctness",
+      "present": true,
+      "severity": "blocker",
+      "notes": "El cliente convierte dinero con Number y puede alterar precision."
+    },
+    {
+      "case_id": "client-refund-money",
+      "category": "tests",
+      "present": true,
+      "severity": "advisory",
+      "notes": "Faltan pruebas para errores HTTP y formatos decimales."
+    },
+    {
+      "case_id": "client-refund-money",
+      "category": "documentation",
+      "present": false,
+      "severity": null,
+      "notes": "No es un cambio de documentacion publica."
+    },
+    {
+      "case_id": "workflow-review-permissions",
+      "category": "security",
+      "present": true,
+      "severity": "blocker",
+      "notes": "El workflow usa permisos amplios y expone un token en logs."
+    },
+    {
+      "case_id": "workflow-review-permissions",
+      "category": "correctness",
+      "present": false,
+      "severity": null,
+      "notes": "No hay regla de negocio de pagos afectada."
+    },
+    {
+      "case_id": "workflow-review-permissions",
+      "category": "tests",
+      "present": false,
+      "severity": null,
+      "notes": "No aplica una prueba de producto para este cambio."
+    },
+    {
+      "case_id": "workflow-review-permissions",
+      "category": "documentation",
+      "present": false,
+      "severity": null,
+      "notes": "No requiere documentacion de usuario."
+    },
+    {
+      "case_id": "refund-boundary-tests",
+      "category": "security",
+      "present": false,
+      "severity": null,
+      "notes": "El cambio no toca permisos ni secretos."
+    },
+    {
+      "case_id": "refund-boundary-tests",
+      "category": "correctness",
+      "present": false,
+      "severity": null,
+      "notes": "La regla de negocio no cambia."
+    },
+    {
+      "case_id": "refund-boundary-tests",
+      "category": "tests",
+      "present": true,
+      "severity": "advisory",
+      "notes": "Faltan casos de borde para refund igual al monto restante."
+    },
+    {
+      "case_id": "refund-boundary-tests",
+      "category": "documentation",
+      "present": false,
+      "severity": null,
+      "notes": "No hay API publica nueva."
+    },
+    {
+      "case_id": "readme-admin-docs",
+      "category": "security",
+      "present": false,
+      "severity": null,
+      "notes": "El caso solo evalua documentacion."
+    },
+    {
+      "case_id": "readme-admin-docs",
+      "category": "correctness",
+      "present": false,
+      "severity": null,
+      "notes": "No hay cambio ejecutable."
+    },
+    {
+      "case_id": "readme-admin-docs",
+      "category": "tests",
+      "present": false,
+      "severity": null,
+      "notes": "No aplica prueba automatizada."
+    },
+    {
+      "case_id": "readme-admin-docs",
+      "category": "documentation",
+      "present": true,
+      "severity": "advisory",
+      "notes": "La documentacion del endpoint admin no explica autorizacion."
+    }
+  ]
+}
