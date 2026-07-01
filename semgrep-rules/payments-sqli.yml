@@ -1,0 +1,21 @@
+rules:
+  - id: payments-sqli-string-concat
+    message: SQL query built with string concatenation. Use parameterized queries instead.
+    severity: ERROR
+    languages:
+      - python
+    metadata:
+      category: security
+      cwe: "CWE-89: SQL Injection"
+      owasp: "A03:2021 - Injection"
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $QUERY = "... " + $VALUE + "... "
+          - pattern: |
+              $QUERY = "... " + $VALUE
+          - pattern: |
+              $QUERY = $LEFT + $VALUE + $RIGHT
+      - metavariable-regex:
+          metavariable: $QUERY
+          regex: (?i).*(query|sql|statement).*
