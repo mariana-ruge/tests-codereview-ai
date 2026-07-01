@@ -16,6 +16,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "cosmic-ray>=8.4",
+    "semgrep>=1.78",
 ]
 
 [tool.setuptools.packages.find]
