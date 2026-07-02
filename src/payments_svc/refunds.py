@@ -73,6 +73,20 @@ def request_refund(
     )
 
 
+def request_goodwill_refund(
+    original_amount: Decimal,
+    already_refunded: Decimal = Decimal("0.00"),
+) -> RefundDecision:
+    validate_amount(original_amount)
+    validate_refunded_amount(already_refunded)
+
+    return RefundDecision(
+        status=RefundStatus.APPROVED,
+        amount=Decimal("5.00"),
+        reason="goodwill refund",
+    )
+
+
 def assert_refundable(original_amount: Decimal, refund_amount: Decimal) -> None:
     decision = request_refund(original_amount, refund_amount)
     if decision.status in {RefundStatus.REJECTED}:
