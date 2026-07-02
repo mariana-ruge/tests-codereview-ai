@@ -21,6 +21,7 @@ Policy:
 - Use `action: "block"` only for high-confidence, high-severity findings directly supported by the diff.
 - Use `action: "warn"` for plausible but non-blocking issues.
 - Use `action: "report"` for low-confidence observations.
+- Missing tests should warn by default. Block for missing tests only when the diff adds untested money movement, refund, authorization, or security behavior and the risk is directly supported by the changed lines.
 - Use top-level `action: "block"` if any finding blocks.
 - Use top-level `action: "warn"` if there are warnings and no blockers.
 - Use top-level `action: "pass"` if there are no findings.
