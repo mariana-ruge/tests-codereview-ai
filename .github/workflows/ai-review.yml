@@ -11,8 +11,6 @@ jobs:
   ai-review:
     name: Review pull request diff
     runs-on: ubuntu-latest
-    env:
-      OPENROUTER_MODEL: ${{ vars.OPENROUTER_MODEL || 'openai/gpt-4o-mini' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,6 +27,15 @@ jobs:
           git fetch origin "${{ github.base_ref }}" --depth=1
           git diff --unified=80 "origin/${{ github.base_ref }}...HEAD" > pr.diff
           test -s pr.diff
+
+      - name: Resolve OpenRouter model
+        env:
+          MODEL_FROM_VARIABLE: ${{ vars.OPENROUTER_MODEL }}
+          MODEL_FROM_SECRET: ${{ secrets.OPENROUTER_MODEL }}
+        run: |
+          model="${MODEL_FROM_VARIABLE:-${MODEL_FROM_SECRET:-openai/gpt-4o-mini}}"
+          echo "OPENROUTER_MODEL=$model" >> "$GITHUB_ENV"
+          echo "Using OpenRouter model: $model"
 
       - name: Run AI reviewer through OpenRouter
         env:

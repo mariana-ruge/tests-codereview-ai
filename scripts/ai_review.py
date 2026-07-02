@@ -161,7 +161,7 @@ def main() -> int:
     diff = read_text(args.diff)
     prompt = read_text(args.prompt)
     schema = load_json(args.schema)
-    model = os.environ.get("OPENROUTER_MODEL", DEFAULT_MODEL)
+    model = os.environ.get("OPENROUTER_MODEL", "").strip() or DEFAULT_MODEL
 
     api_key = os.environ.get("OPENROUTER_API_KEY")
     if not api_key:
