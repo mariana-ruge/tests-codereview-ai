@@ -34,7 +34,3 @@ The workflow sends only the PR diff to the model. It does not send the full repo
 This first version proves that the AI reviewer can run in GitHub Actions. It does not attempt full rollout governance yet.
 
 Class 16 will introduce shadow mode and promotion criteria. Class 17 will add cost, latency, cache, and routing controls.
-
-## Dry run note
-
-This line exists only to trigger a small pull request while testing the OpenRouter connection.

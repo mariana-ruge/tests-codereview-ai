@@ -60,7 +60,7 @@ class RefundResponse(BaseModel):
 
 @app.get("/health")
 def health() -> dict[str, str]:
-    return {"status": "ok"}
+    return {"status": "ok", "service": "payments-svc"}
 
 
 @app.post("/payments", response_model=PaymentResponse)
