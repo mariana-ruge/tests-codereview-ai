@@ -1,4 +1,4 @@
-"""Summarize AI review history as regression evidence."""
+"""Resume el historial del AI review como evidencia de regresion."""
 
 from __future__ import annotations
 
@@ -112,14 +112,14 @@ def recommendation(rule_cases: list[dict[str, Any]]) -> str:
     false_negatives = sum(1 for case in rule_cases if case["outcome"] == "false_negative")
 
     if total >= 2 and agreements == total and any(case["human_action"] == "block" for case in rule_cases):
-        return "candidate: promote to block"
+        return "candidata: promover a block"
     if false_negatives:
-        return "improve: strengthen prompt or route before promotion"
+        return "mejorar: fortalecer prompt o ruteo antes de promover"
     if false_positives:
-        return "improve: narrow policy and keep in shadow or warn"
+        return "mejorar: acotar politica y mantener en shadow o warn"
     if agreements == total:
-        return "stable: keep collecting evidence"
-    return "keep: shadow"
+        return "estable: seguir recolectando evidencia"
+    return "mantener: shadow"
 
 
 def print_report(cases: list[dict[str, Any]]) -> None:
@@ -131,12 +131,12 @@ def print_report(cases: list[dict[str, Any]]) -> None:
         by_rule[case["rule"]].append(case)
 
     total = len(cases)
-    print(f"Regression cases: {total}")
-    print(f"Agreement: {totals['agreement']}/{total} ({percent(totals['agreement'], total)})")
-    print(f"False positives: {totals['false_positive']}")
-    print(f"False negatives: {totals['false_negative']}")
+    print(f"Casos de regresion: {total}")
+    print(f"Acuerdo: {totals['agreement']}/{total} ({percent(totals['agreement'], total)})")
+    print(f"Falsos positivos: {totals['false_positive']}")
+    print(f"Falsos negativos: {totals['false_negative']}")
     print()
-    print("Recommended improvements:")
+    print("Mejoras recomendadas:")
 
     for rule in sorted(by_rule):
         rule_cases = by_rule[rule]
@@ -146,7 +146,7 @@ def print_report(cases: list[dict[str, Any]]) -> None:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Build an AI review regression report.")
+    parser = argparse.ArgumentParser(description="Genera un reporte de regresion del AI review.")
     parser.add_argument("history", type=Path, help="Path to review-history.json.")
     return parser.parse_args()
 
@@ -156,7 +156,7 @@ def main() -> int:
     try:
         cases = load_cases(args.history)
     except DatasetError as exc:
-        print(f"Invalid review history: {exc}")
+        print(f"Historial de reviews invalido: {exc}")
         return 1
 
     print_report(cases)

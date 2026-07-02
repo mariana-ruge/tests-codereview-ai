@@ -12,8 +12,8 @@
       "model_action": "block",
       "human_action": "block",
       "outcome": "agreement",
-      "lesson": "SQL built with user input is a high-confidence blocker in payments code.",
-      "improvement": "Keep this rule as a block candidate when evidence is directly in the diff."
+      "lesson": "SQL construido con entrada de usuario es un bloqueo de alta confianza en codigo de pagos.",
+      "improvement": "Mantener esta regla como candidata a bloqueo cuando la evidencia esta directamente en el diff."
     },
     {
       "case_id": "n17-docs-fast-pass",
@@ -26,8 +26,8 @@
       "model_action": "pass",
       "human_action": "pass",
       "outcome": "agreement",
-      "lesson": "Documentation-only changes should use the fast route and avoid noisy findings.",
-      "improvement": "Keep docs-only routing separate from money and security review paths."
+      "lesson": "Los cambios solo documentales deben usar la ruta rapida y evitar hallazgos ruidosos.",
+      "improvement": "Mantener el ruteo de documentacion separado de las rutas de dinero y seguridad."
     },
     {
       "case_id": "n17-refunds-strong-block",
@@ -40,8 +40,8 @@
       "model_action": "block",
       "human_action": "block",
       "outcome": "agreement",
-      "lesson": "A refund path that can approve more than the remaining refundable balance should block.",
-      "improvement": "Keep refunds on the strong model route and require direct balance evidence for blockers."
+      "lesson": "Una ruta de reembolso que puede aprobar mas que el saldo reembolsable restante debe bloquear.",
+      "improvement": "Mantener refunds en la ruta de modelo fuerte y exigir evidencia directa de saldo para bloquear."
     }
   ]
 }
