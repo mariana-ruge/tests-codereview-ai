@@ -6,6 +6,8 @@ Class 17 adds an operational planning step before the AI reviewer calls OpenRout
 
 The goal is not to make the reviewer smarter. The goal is to make it sustainable in CI: choose the right model, leave a cache key, explain the route, and keep the latency target visible.
 
+The plan records both the selected model and the source used to resolve it. In the PR comment, `OPENROUTER_MODEL_FAST` or `OPENROUTER_MODEL_STRONG` means the workflow used the GitHub variable; `default:...` means it fell back to the repository default.
+
 ## Routes
 
 | Route | Model | When it applies | Latency target | Estimated cost |

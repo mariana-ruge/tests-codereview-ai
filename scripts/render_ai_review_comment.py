@@ -72,6 +72,7 @@ def plan_lines(plan: dict[str, Any] | None) -> list[str]:
         "",
         f"- Ruta: `{plan.get('route', 'unknown')}`",
         f"- Modelo seleccionado: `{plan.get('selected_model', 'unknown')}`",
+        f"- Fuente del modelo: `{plan.get('selected_model_source', 'unknown')}`",
         f"- Cache: `{plan.get('cache_policy', 'unknown')}` con key `{plan.get('cache_key', 'unknown')}`",
         f"- Costo estimado: `{plan.get('estimated_cost', 'unknown')}`",
         f"- Objetivo de latencia: `{plan.get('latency_target_seconds', 'unknown')}s`",

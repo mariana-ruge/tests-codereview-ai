@@ -84,12 +84,19 @@ def choose_route(files: list[str], added_lines: int) -> tuple[str, str, int, str
     )
 
 
-def selected_model(route: str) -> str:
-    fast_model = os.environ.get("OPENROUTER_MODEL_FAST", "").strip() or DEFAULT_FAST_MODEL
-    strong_model = os.environ.get("OPENROUTER_MODEL_STRONG", "").strip() or DEFAULT_STRONG_MODEL
+def configured_model(env_name: str, default: str) -> tuple[str, str]:
+    value = os.environ.get(env_name, "").strip()
+    if value:
+        return value, env_name
+    return default, f"default:{env_name}"
+
+
+def selected_model(route: str) -> tuple[str, str]:
+    fast_model, fast_source = configured_model("OPENROUTER_MODEL_FAST", DEFAULT_FAST_MODEL)
+    strong_model, strong_source = configured_model("OPENROUTER_MODEL_STRONG", DEFAULT_STRONG_MODEL)
     if route in {"security-sensitive", "payments-critical", "large-diff"}:
-        return strong_model
-    return fast_model
+        return strong_model, strong_source
+    return fast_model, fast_source
 
 
 def build_plan(diff: str) -> dict[str, object]:
@@ -97,10 +104,12 @@ def build_plan(diff: str) -> dict[str, object]:
     added_lines = added_line_count(diff)
     digest = hashlib.sha256(diff.encode("utf-8")).hexdigest()
     route, reason, latency_target_seconds, estimated_cost = choose_route(files, added_lines)
+    model, model_source = selected_model(route)
     return {
         "schema_version": "1.0",
         "route": route,
-        "selected_model": selected_model(route),
+        "selected_model": model,
+        "selected_model_source": model_source,
         "cache_key": digest[:16],
         "cache_policy": "report-only",
         "cache_hit": False,
@@ -136,6 +145,7 @@ def main() -> int:
 
     print(f"Review route: {plan['route']}")
     print(f"Selected model: {plan['selected_model']}")
+    print(f"Selected model source: {plan['selected_model_source']}")
     print(f"Cache key: {plan['cache_key']}")
     print(f"Estimated cost: {plan['estimated_cost']}")
     print(f"Latency target: {plan['latency_target_seconds']}s")
