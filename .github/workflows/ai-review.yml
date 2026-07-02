@@ -28,14 +28,12 @@ jobs:
           git diff --unified=80 "origin/${{ github.base_ref }}...HEAD" > pr.diff
           test -s pr.diff
 
-      - name: Resolve OpenRouter model
+      - name: Plan AI review route
         env:
-          MODEL_FROM_VARIABLE: ${{ vars.OPENROUTER_MODEL }}
-          MODEL_FROM_SECRET: ${{ secrets.OPENROUTER_MODEL }}
+          OPENROUTER_MODEL_FAST: ${{ vars.OPENROUTER_MODEL_FAST || vars.OPENROUTER_MODEL || secrets.OPENROUTER_MODEL }}
+          OPENROUTER_MODEL_STRONG: ${{ vars.OPENROUTER_MODEL_STRONG || vars.OPENROUTER_MODEL || secrets.OPENROUTER_MODEL }}
         run: |
-          model="${MODEL_FROM_VARIABLE:-${MODEL_FROM_SECRET:-openai/gpt-4o-mini}}"
-          echo "OPENROUTER_MODEL=$model" >> "$GITHUB_ENV"
-          echo "Using OpenRouter model: $model"
+          python scripts/plan_ai_review.py pr.diff --out ai-review-plan.json
 
       - name: Run AI reviewer through OpenRouter
         env:
@@ -72,6 +70,15 @@ jobs:
               echo "The AI review did not produce a summary."
             fi
             echo
+            echo "### Review plan"
+            echo '```json'
+            if [ -f ai-review-plan.json ]; then
+              cat ai-review-plan.json
+            else
+              echo '{}'
+            fi
+            echo '```'
+            echo
             echo "### Raw verdict"
             echo '```json'
             if [ -f ai-review-verdict.json ]; then
@@ -89,7 +96,7 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           if [ -f ai-review-verdict.json ]; then
-            python scripts/render_ai_review_comment.py ai-review-verdict.json --mode shadow > ai-review-comment.md
+            python scripts/render_ai_review_comment.py ai-review-verdict.json --mode shadow --plan ai-review-plan.json > ai-review-comment.md
           else
             {
               echo "## Revision con IA"

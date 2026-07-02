@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 
-def load_verdict(path: Path) -> dict[str, Any]:
+def load_json_object(path: Path, label: str) -> dict[str, Any]:
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except OSError as exc:
@@ -16,7 +16,7 @@ def load_verdict(path: Path) -> dict[str, Any]:
     except json.JSONDecodeError as exc:
         raise SystemExit(f"{path} is not valid JSON: {exc}") from exc
     if not isinstance(data, dict):
-        raise SystemExit("Verdict must be a JSON object.")
+        raise SystemExit(f"{label} must be a JSON object.")
     return data
 
 
@@ -64,7 +64,23 @@ def finding_lines(findings: list[Any]) -> list[str]:
     return lines
 
 
-def render_comment(verdict: dict[str, Any], mode: str) -> str:
+def plan_lines(plan: dict[str, Any] | None) -> list[str]:
+    if not plan:
+        return []
+    return [
+        "### Plan operativo",
+        "",
+        f"- Ruta: `{plan.get('route', 'unknown')}`",
+        f"- Modelo seleccionado: `{plan.get('selected_model', 'unknown')}`",
+        f"- Cache: `{plan.get('cache_policy', 'unknown')}` con key `{plan.get('cache_key', 'unknown')}`",
+        f"- Costo estimado: `{plan.get('estimated_cost', 'unknown')}`",
+        f"- Objetivo de latencia: `{plan.get('latency_target_seconds', 'unknown')}s`",
+        f"- Razon: {plan.get('reason', 'No se recibio razon de ruteo.')}",
+        "",
+    ]
+
+
+def render_comment(verdict: dict[str, Any], mode: str, plan: dict[str, Any] | None) -> str:
     action = str(verdict.get("action", "unknown"))
     model = str(verdict.get("model", "unknown"))
     summary = str(verdict.get("diff_summary", "No se recibio resumen del diff."))
@@ -87,6 +103,7 @@ def render_comment(verdict: dict[str, Any], mode: str) -> str:
         "",
         shadow_message(action) if mode == "shadow" else "El gate esta corriendo en modo aplicado.",
         "",
+        *plan_lines(plan),
         "Este comentario esta escrito primero para la persona que revisa. El JSON queda abajo solo como evidencia de auditoria.",
         "",
         "### Hallazgos",
@@ -109,12 +126,15 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Render an AI review PR comment.")
     parser.add_argument("verdict", type=Path)
     parser.add_argument("--mode", choices=["enforced", "shadow"], default="enforced")
+    parser.add_argument("--plan", type=Path)
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    print(render_comment(load_verdict(args.verdict), args.mode), end="")
+    verdict = load_json_object(args.verdict, "Verdict")
+    plan = load_json_object(args.plan, "Plan") if args.plan else None
+    print(render_comment(verdict, args.mode, plan), end="")
     return 0
 
 
