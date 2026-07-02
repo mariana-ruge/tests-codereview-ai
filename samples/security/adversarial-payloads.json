@@ -1,0 +1,42 @@
+{
+  "source": "clase-12-suite-adversarial",
+  "taxonomy": "OWASP Top 10 2021",
+  "target": "payments_svc.db.find_customer_by_email",
+  "payloads": [
+    {
+      "id": "owasp-a03-sqli-tautology",
+      "category": "A03: Injection",
+      "value": "' OR '1'='1",
+      "expected_safe_behavior": "no customer is returned for a payload that is not a real email",
+      "risk": "A raw SQL WHERE clause can be turned into a tautology."
+    },
+    {
+      "id": "owasp-a03-sqli-comment",
+      "category": "A03: Injection",
+      "value": "victim@example.com' --",
+      "expected_safe_behavior": "the payload is treated as a literal email string",
+      "risk": "A SQL comment can remove the trailing quote or conditions."
+    },
+    {
+      "id": "malformed-control-character",
+      "category": "Malformed input",
+      "value": "victim@example.com\n",
+      "expected_safe_behavior": "the lookup does not match an existing customer",
+      "risk": "Control characters can expose inconsistent parsing or storage assumptions."
+    },
+    {
+      "id": "boundary-long-email",
+      "category": "Boundary value",
+      "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@example.com",
+      "expected_safe_behavior": "the lookup does not crash and does not match unrelated customers",
+      "risk": "Very long input can expose missing limits or unexpected database behavior."
+    },
+    {
+      "id": "safe-parameterized-country-lookup",
+      "category": "A03: Injection",
+      "value": "' OR '1'='1",
+      "expected_safe_behavior": "the parameterized country lookup returns no customers",
+      "risk": "This control case proves the test distinguishes unsafe concatenation from safe parameters."
+    }
+  ]
+}
