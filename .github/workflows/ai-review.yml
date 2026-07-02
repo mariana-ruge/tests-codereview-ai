@@ -1,0 +1,66 @@
+name: AI review
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  ai-review:
+    name: Review pull request diff
+    runs-on: ubuntu-latest
+    env:
+      OPENROUTER_MODEL: ${{ vars.OPENROUTER_MODEL || 'openai/gpt-4o-mini' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Extract pull request diff
+        run: |
+          git fetch origin "${{ github.base_ref }}" --depth=1
+          git diff --unified=80 "origin/${{ github.base_ref }}...HEAD" > pr.diff
+          test -s pr.diff
+
+      - name: Run AI reviewer through OpenRouter
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          python scripts/ai_review.py \
+            --diff pr.diff \
+            --out ai-review-verdict.json
+
+      - name: Validate AI verdict
+        run: |
+          python scripts/validate_ai_review.py ai-review-verdict.json > ai-review-summary.txt
+          cat ai-review-summary.txt
+
+      - name: Publish job summary
+        if: always()
+        run: |
+          {
+            echo "## AI review"
+            echo
+            if [ -f ai-review-summary.txt ]; then
+              cat ai-review-summary.txt
+            else
+              echo "The AI review did not produce a summary."
+            fi
+            echo
+            echo "### Raw verdict"
+            echo '```json'
+            if [ -f ai-review-verdict.json ]; then
+              cat ai-review-verdict.json
+            else
+              echo '{}'
+            fi
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

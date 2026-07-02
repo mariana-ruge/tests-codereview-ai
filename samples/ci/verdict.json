@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0",
+  "review_mode": "pull_request",
+  "model": "offline/openai/gpt-4o-mini",
+  "diff_summary": "The diff adds the initial CI gate policy document.",
+  "action": "pass",
+  "findings": []
+}
