@@ -42,6 +42,20 @@
       "outcome": "agreement",
       "lesson": "Una ruta de reembolso que puede aprobar mas que el saldo reembolsable restante debe bloquear.",
       "improvement": "Mantener refunds en la ruta de modelo fuerte y exigir evidencia directa de saldo para bloquear."
+    },
+    {
+      "case_id": "n18-tests-warning-override",
+      "source": "class-18-demo",
+      "pr_number": 18,
+      "route": "payments-critical",
+      "model": "openai/gpt-5.4-mini",
+      "rule": "tests-missing-critical-path",
+      "category": "tests",
+      "model_action": "block",
+      "human_action": "warn",
+      "outcome": "false_positive",
+      "lesson": "La senal de tests faltantes es util, pero el equipo no quiere que bloquee por si sola todavia.",
+      "improvement": "Aclarar el prompt y la politica: tests faltantes advierten por defecto y solo bloquean cuando el diff agrega movimiento de dinero, refunds, autorizacion o seguridad sin pruebas y con evidencia directa."
     }
   ]
 }
