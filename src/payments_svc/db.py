@@ -40,6 +40,22 @@ def find_active_customers_by_country(
     ]
 
 
+def search_customers_by_email_fragment(
+    connection: sqlite3.Connection,
+    email_fragment: str,
+) -> list[CustomerRecord]:
+    query = (
+        "SELECT id, email, status "
+        "FROM customers "
+        "WHERE email LIKE '%" + email_fragment + "%'"
+    )
+    cursor = connection.execute(query)
+    return [
+        CustomerRecord(id=row[0], email=row[1], status=row[2])
+        for row in cursor.fetchall()
+    ]
+
+
 def count_customers_for_status(
     connection: sqlite3.Connection,
     status: str,

@@ -13,7 +13,7 @@ from payments_svc.api import (
 
 class TestApi(unittest.TestCase):
     def test_health_returns_ok(self):
-        self.assertEqual(health(), {"status": "ok", "service": "payments-svc"})
+        self.assertEqual(health(), {"status": "ok"})
 
     def test_create_payment_returns_amount_fee_and_total(self):
         response = create_payment(
