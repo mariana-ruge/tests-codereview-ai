@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "cases": [
+    {
+      "case_id": "n15-sql-injection-block",
+      "source": "class-15-pr",
+      "pr_number": 8,
+      "route": "security-sensitive",
+      "model": "openrouter-configured",
+      "rule": "security-sql-injection",
+      "category": "security",
+      "model_action": "block",
+      "human_action": "block",
+      "outcome": "agreement",
+      "lesson": "SQL built with user input is a high-confidence blocker in payments code.",
+      "improvement": "Keep this rule as a block candidate when evidence is directly in the diff."
+    },
+    {
+      "case_id": "n17-docs-fast-pass",
+      "source": "github-pr",
+      "pr_number": 17,
+      "route": "docs-only",
+      "model": "openai/gpt-5.4-nano",
+      "rule": "docs-only-noise-control",
+      "category": "routing",
+      "model_action": "pass",
+      "human_action": "pass",
+      "outcome": "agreement",
+      "lesson": "Documentation-only changes should use the fast route and avoid noisy findings.",
+      "improvement": "Keep docs-only routing separate from money and security review paths."
+    },
+    {
+      "case_id": "n17-refunds-strong-block",
+      "source": "github-pr",
+      "pr_number": 18,
+      "route": "payments-critical",
+      "model": "openai/gpt-5.4-mini",
+      "rule": "refund-over-refund",
+      "category": "correctness",
+      "model_action": "block",
+      "human_action": "block",
+      "outcome": "agreement",
+      "lesson": "A refund path that can approve more than the remaining refundable balance should block.",
+      "improvement": "Keep refunds on the strong model route and require direct balance evidence for blockers."
+    }
+  ]
+}
