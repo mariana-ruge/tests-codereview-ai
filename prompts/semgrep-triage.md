@@ -38,7 +38,9 @@ Formato de salida:
 ## Prompt para generar regla Semgrep
 
 ````md
-Convierte este anti-patron confirmado en una regla Semgrep para Python:
+Convierte este anti-patron confirmado en una regla Semgrep para Python.
+
+Importante: no quiero una explicacion general. Quiero una regla que pueda guardar y ejecutar con Semgrep.
 
 Anti-patron:
 
@@ -60,7 +62,10 @@ Requisitos:
 
 - La regla debe vivir en `semgrep-rules/payments-sqli.yml`.
 - Debe tener `id`, `message`, `severity`, `languages`, `metadata` y `patterns`.
-- Debe detectar el ejemplo vulnerable.
+- Debe detectar queries construidas por concatenacion aunque la query se arme en una variable y se ejecute despues usando esa variable.
 - Debe recomendar queries parametrizadas.
+- No uses patrones que solo detecten llamadas directas como `connection.execute("... " + value)`.
+- No uses una regla que dependa de una sola linea; la concatenacion puede estar dentro de una asignacion multilinea.
+- Incluye una forma razonable de evitar que la regla sea tan especifica que solo funcione para el ejemplo.
 - No incluyas Markdown en el YAML final.
 ````
