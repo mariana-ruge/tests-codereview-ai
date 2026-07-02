@@ -31,3 +31,7 @@ Class 15 proved the gate can block.
 Class 16 showed how to run it in shadow mode.
 
 Class 17 makes the gate operational: before spending tokens, the pipeline explains why a model is selected and what cost/latency tradeoff the team is accepting.
+
+## Demo contrast
+
+Use a documentation-only PR to show the fast route, then compare it with a refunds PR that selects the strong route.
