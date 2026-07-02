@@ -5,7 +5,7 @@ on:
 
 permissions:
   contents: read
-  pull-requests: read
+  pull-requests: write
 
 jobs:
   ai-review:
@@ -64,3 +64,33 @@ jobs:
             fi
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comment on pull request
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          {
+            echo "## AI review"
+            echo
+            if [ -f ai-review-summary.txt ]; then
+              cat ai-review-summary.txt
+            else
+              echo "The AI review did not produce a summary."
+            fi
+            echo
+            echo "<details>"
+            echo "<summary>Raw verdict JSON</summary>"
+            echo
+            echo '```json'
+            if [ -f ai-review-verdict.json ]; then
+              cat ai-review-verdict.json
+            else
+              echo '{}'
+            fi
+            echo '```'
+            echo
+            echo "</details>"
+          } > ai-review-comment.md
+          gh pr comment "$PR_NUMBER" --body-file ai-review-comment.md

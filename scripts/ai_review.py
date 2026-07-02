@@ -148,7 +148,7 @@ def main() -> int:
         response = call_openrouter(build_payload(prompt, diff, schema, model), api_key)
         verdict = extract_verdict(response)
 
-    verdict.setdefault("model", model)
+    verdict["model"] = model
     write_json(args.out, verdict)
     print(f"Wrote AI review verdict to {args.out}")
     return 0
