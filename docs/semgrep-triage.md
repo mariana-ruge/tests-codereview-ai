@@ -4,13 +4,15 @@
 
 Clase 11 usa Semgrep como scanner determinista y la IA como capa de triage.
 
-La herramienta encontro un patron de SQL construido de forma insegura. La IA no decide desde cero si el repo es seguro; recibe el hallazgo, el codigo alrededor y debe clasificarlo con evidencia.
+La herramienta encontro hallazgos de seguridad. La IA no decide desde cero si el repo es seguro; recibe la salida de Semgrep y debe inspeccionar los archivos y lineas citados antes de clasificar con evidencia.
 
 ## Comandos ejecutados
 
 ```sh
 semgrep --version
-semgrep --config auto --json src
+mkdir -p samples/semgrep
+semgrep --config auto --json src > samples/semgrep/semgrep-results.json
+cat samples/semgrep/semgrep-results.json
 ```
 
 Version probada:
@@ -23,7 +25,7 @@ Resumen de la corrida con `--config auto`:
 
 ```text
 Findings: 4
-Rules run: 290
+Rules run: 1198
 Targets scanned: 10
 
 Finding 1: src/payments_svc/db.py:23

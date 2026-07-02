@@ -2,7 +2,7 @@
 
 ## Uso
 
-Usa este prompt despues de correr Semgrep. La IA no escanea el repositorio desde cero: recibe hallazgos concretos, codigo alrededor y decide si cada hallazgo es real en este contexto.
+Usa este prompt despues de correr Semgrep. La IA no escanea el repositorio desde cero: recibe la salida de Semgrep y debe inspeccionar en el repo los archivos y lineas citados por la herramienta.
 
 ## Prompt de triage
 
@@ -11,9 +11,8 @@ Actua como revisor de seguridad para `payments-svc`.
 
 Voy a darte:
 
-1. Un hallazgo bruto de Semgrep.
-2. El fragmento de codigo alrededor.
-3. El contexto minimo del modulo.
+1. La salida bruta de Semgrep.
+2. Acceso al repositorio `payments-svc`.
 
 Tu tarea es clasificar el hallazgo en una de estas categorias:
 
@@ -23,7 +22,8 @@ Tu tarea es clasificar el hallazgo en una de estas categorias:
 
 Reglas:
 
-- Usa solo el hallazgo y el codigo que te comparto.
+- Usa solo la salida de Semgrep y los archivos del repo.
+- Abre los archivos y lineas citados por Semgrep antes de clasificar.
 - Cita lineas reales del archivo.
 - No inventes contexto de infraestructura, base de datos, autenticacion o usuarios.
 - Si necesitas una suposicion para decidir, clasifica como `human_required`.
