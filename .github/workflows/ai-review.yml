@@ -22,6 +22,11 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Build AI review regression report
+        run: |
+          python scripts/build_regression_dataset.py samples/ci/review-history.json > ai-review-regression-report.txt
+          cat ai-review-regression-report.txt
+
       - name: Extract pull request diff
         run: |
           git fetch origin "${{ github.base_ref }}" --depth=1
@@ -69,6 +74,15 @@ jobs:
             else
               echo "The AI review did not produce a summary."
             fi
+            echo
+            echo "### Regression report"
+            echo '```text'
+            if [ -f ai-review-regression-report.txt ]; then
+              cat ai-review-regression-report.txt
+            else
+              echo 'Regression report was not produced.'
+            fi
+            echo '```'
             echo
             echo "### Review plan"
             echo '```json'
