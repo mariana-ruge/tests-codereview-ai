@@ -30,24 +30,6 @@ def load_json(path: Path) -> dict[str, Any]:
         raise SystemExit(f"{path} is not valid JSON: {exc}") from exc
 
 
-def offline_verdict(diff: str, model: str) -> dict[str, Any]:
-    changed_files = []
-    for line in diff.splitlines():
-        if line.startswith("+++ b/"):
-            changed_files.append(line.removeprefix("+++ b/"))
-    summary = "Offline fallback review for: " + ", ".join(changed_files[:5])
-    if not changed_files:
-        summary = "Offline fallback review found no changed files in the diff."
-    return {
-        "schema_version": "1.0",
-        "review_mode": "pull_request",
-        "model": model,
-        "diff_summary": summary,
-        "action": "pass",
-        "findings": [],
-    }
-
-
 def build_payload(prompt: str, diff: str, schema: dict[str, Any], model: str) -> dict[str, Any]:
     user_message = (
         "Review this pull request diff and return only JSON matching the schema.\n\n"
@@ -171,11 +153,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--out", required=True, type=Path, help="Path to write the verdict JSON.")
     parser.add_argument("--prompt", default=Path("prompts/ci-review.md"), type=Path)
     parser.add_argument("--schema", default=Path("schemas/ai-review.schema.json"), type=Path)
-    parser.add_argument(
-        "--offline",
-        action="store_true",
-        help="Generate a deterministic local verdict without calling OpenRouter.",
-    )
     return parser.parse_args()
 
 
@@ -186,15 +163,12 @@ def main() -> int:
     schema = load_json(args.schema)
     model = os.environ.get("OPENROUTER_MODEL", DEFAULT_MODEL)
 
-    if args.offline:
-        verdict = offline_verdict(diff, f"offline/{model}")
-    else:
-        api_key = os.environ.get("OPENROUTER_API_KEY")
-        if not api_key:
-            raise SystemExit("OPENROUTER_API_KEY is required unless --offline is used.")
-        print(f"Calling OpenRouter model: {model}", file=sys.stderr)
-        response = call_openrouter(build_payload(prompt, diff, schema, model), api_key)
-        verdict = extract_verdict(response)
+    api_key = os.environ.get("OPENROUTER_API_KEY")
+    if not api_key:
+        raise SystemExit("OPENROUTER_API_KEY is required.")
+    print(f"Calling OpenRouter model: {model}", file=sys.stderr)
+    response = call_openrouter(build_payload(prompt, diff, schema, model), api_key)
+    verdict = extract_verdict(response)
 
     verdict["model"] = model
     normalize_finding_lines(verdict, diff)
