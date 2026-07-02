@@ -109,6 +109,54 @@ def extract_verdict(response: dict[str, Any]) -> dict[str, Any]:
         raise SystemExit(f"AI reviewer returned invalid JSON: {exc}\nRaw content:\n{content}") from exc
 
 
+def index_added_lines(diff: str) -> dict[tuple[str, str], int]:
+    line_index: dict[tuple[str, str], int] = {}
+    current_file: str | None = None
+    new_line: int | None = None
+
+    for raw_line in diff.splitlines():
+        if raw_line.startswith("+++ b/"):
+            current_file = raw_line.removeprefix("+++ b/")
+            continue
+        if raw_line.startswith("@@"):
+            marker = raw_line.split(" ")[2]
+            start = marker.removeprefix("+").split(",")[0]
+            try:
+                new_line = int(start)
+            except ValueError:
+                new_line = None
+            continue
+        if current_file is None or new_line is None:
+            continue
+        if raw_line.startswith("+") and not raw_line.startswith("+++"):
+            line_index[(current_file, raw_line[1:].strip())] = new_line
+            new_line += 1
+        elif raw_line.startswith("-") and not raw_line.startswith("---"):
+            continue
+        else:
+            new_line += 1
+
+    return line_index
+
+
+def normalize_finding_lines(verdict: dict[str, Any], diff: str) -> None:
+    line_index = index_added_lines(diff)
+    findings = verdict.get("findings", [])
+    if not isinstance(findings, list):
+        return
+
+    for finding in findings:
+        if not isinstance(finding, dict):
+            continue
+        file_name = finding.get("file")
+        evidence = finding.get("evidence")
+        if not isinstance(file_name, str) or not isinstance(evidence, str):
+            continue
+        matched_line = line_index.get((file_name, evidence.strip()))
+        if matched_line is not None:
+            finding["line"] = matched_line
+
+
 def write_json(path: Path, data: dict[str, Any]) -> None:
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -149,6 +197,7 @@ def main() -> int:
         verdict = extract_verdict(response)
 
     verdict["model"] = model
+    normalize_finding_lines(verdict, diff)
     write_json(args.out, verdict)
     print(f"Wrote AI review verdict to {args.out}")
     return 0
