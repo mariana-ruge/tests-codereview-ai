@@ -14,6 +14,8 @@ Focus on issues that could matter in a payments service:
 
 Return JSON only. It must match the provided schema.
 
+Write all human-readable JSON strings in Spanish, including `diff_summary`, finding `title`, `evidence`, and `recommendation`.
+
 Policy:
 
 - Use `action: "block"` only for high-confidence, high-severity findings directly supported by the diff.

@@ -51,34 +51,34 @@ def choose_route(files: list[str], added_lines: int) -> tuple[str, str, int, str
     if files and all(file.endswith(".md") or file.startswith("docs/") for file in files):
         return (
             "docs-only",
-            "Documentation-only diff uses the fast model and a short latency target.",
+            "El diff solo cambia documentacion, asi que usa el modelo rapido y una meta corta de latencia.",
             30,
             "low",
         )
     if any(file.startswith(SECURITY_PATHS) for file in files):
         return (
             "security-sensitive",
-            "Diff touches security-sensitive code or rules, so the strong model is selected.",
+            "El diff toca codigo o reglas sensibles de seguridad, asi que se selecciona el modelo fuerte.",
             90,
             "medium",
         )
     if any(file.startswith(MONEY_PATHS) for file in files):
         return (
             "payments-critical",
-            "Diff touches money or refund behavior, so the strong model is selected.",
+            "El diff toca dinero o comportamiento de refunds, asi que se selecciona el modelo fuerte.",
             90,
             "medium",
         )
     if added_lines > 120:
         return (
             "large-diff",
-            "Large diff gets the strong model because review context is broader.",
+            "El diff es grande y requiere mas contexto de revision, asi que usa el modelo fuerte.",
             120,
             "medium",
         )
     return (
         "fast",
-        "Small non-sensitive diff uses the fast model.",
+        "El diff es pequeno y no toca rutas sensibles, asi que usa el modelo rapido.",
         45,
         "low",
     )
