@@ -38,3 +38,16 @@ def find_active_customers_by_country(
         CustomerRecord(id=row[0], email=row[1], status=row[2])
         for row in cursor.fetchall()
     ]
+
+
+def count_customers_for_status(
+    connection: sqlite3.Connection,
+    status: str,
+) -> int:
+    allowed_statuses = {"active", "blocked", "pending"}
+    if status not in allowed_statuses:
+        raise ValueError("unsupported customer status")
+
+    query = "SELECT COUNT(*) FROM customers WHERE status = '" + status + "'"
+    row = connection.execute(query).fetchone()
+    return int(row[0])
