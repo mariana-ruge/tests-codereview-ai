@@ -1,4 +1,4 @@
 fastapi
 uvicorn[standard]
 semgrep
-requests-utils
+requests-ai-utils
