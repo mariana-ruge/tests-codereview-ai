@@ -56,6 +56,22 @@ def search_customers_by_email_fragment(
     ]
 
 
+def search_customers_by_country_prefix(
+    connection: sqlite3.Connection,
+    country_prefix: str,
+) -> list[CustomerRecord]:
+    query = (
+        "SELECT id, email, status "
+        "FROM customers "
+        "WHERE country LIKE '" + country_prefix + "%'"
+    )
+    cursor = connection.execute(query)
+    return [
+        CustomerRecord(id=row[0], email=row[1], status=row[2])
+        for row in cursor.fetchall()
+    ]
+
+
 def count_customers_for_status(
     connection: sqlite3.Connection,
     status: str,
