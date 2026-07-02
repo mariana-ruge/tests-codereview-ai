@@ -139,6 +139,25 @@ def normalize_finding_lines(verdict: dict[str, Any], diff: str) -> None:
             finding["line"] = matched_line
 
 
+def normalize_verdict_action(verdict: dict[str, Any]) -> None:
+    findings = verdict.get("findings", [])
+    if not isinstance(findings, list) or not findings:
+        verdict["action"] = "pass"
+        return
+
+    actions = [
+        finding.get("action")
+        for finding in findings
+        if isinstance(finding, dict)
+    ]
+    if "block" in actions:
+        verdict["action"] = "block"
+    elif "warn" in actions:
+        verdict["action"] = "warn"
+    else:
+        verdict["action"] = "warn"
+
+
 def write_json(path: Path, data: dict[str, Any]) -> None:
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -172,6 +191,7 @@ def main() -> int:
 
     verdict["model"] = model
     normalize_finding_lines(verdict, diff)
+    normalize_verdict_action(verdict)
     write_json(args.out, verdict)
     print(f"Wrote AI review verdict to {args.out}")
     return 0
