@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0",
+  "runs": [
+    {
+      "id": "run-001",
+      "pr": "PR-15-sql-injection-demo",
+      "rule": "security-sql-injection",
+      "category": "security",
+      "ai_action": "block",
+      "human_action": "block",
+      "lesson": "The model and reviewer agree that the class 15 SQL string concatenation must block."
+    },
+    {
+      "id": "run-002",
+      "pr": "PR-security-country-filter",
+      "rule": "security-sql-injection",
+      "category": "security",
+      "ai_action": "block",
+      "human_action": "block",
+      "lesson": "The finding is supported by direct evidence in the diff."
+    },
+    {
+      "id": "run-003",
+      "pr": "PR-admin-search",
+      "rule": "security-sql-injection",
+      "category": "security",
+      "ai_action": "block",
+      "human_action": "block",
+      "lesson": "Repeated agreement makes this rule a candidate for blocking."
+    },
+    {
+      "id": "run-004",
+      "pr": "PR-payment-idempotency-key",
+      "rule": "payment-idempotency",
+      "category": "correctness",
+      "ai_action": "warn",
+      "human_action": "warn",
+      "lesson": "The model correctly warns that echoing an idempotency key is not idempotency."
+    },
+    {
+      "id": "run-005",
+      "pr": "PR-payment-retry-metadata",
+      "rule": "payment-idempotency",
+      "category": "correctness",
+      "ai_action": "pass",
+      "human_action": "warn",
+      "lesson": "The model missed a retry-risk concern, so the rule stays in shadow."
+    },
+    {
+      "id": "run-006",
+      "pr": "PR-payment-create-retry",
+      "rule": "payment-idempotency",
+      "category": "correctness",
+      "ai_action": "warn",
+      "human_action": "warn",
+      "lesson": "Useful signal, but not enough evidence to block payments work yet."
+    },
+    {
+      "id": "run-007",
+      "pr": "PR-refund-copy-change",
+      "rule": "tests-missing-critical-path",
+      "category": "tests",
+      "ai_action": "warn",
+      "human_action": "pass",
+      "lesson": "The model asked for tests on a documentation-only change: false positive."
+    },
+    {
+      "id": "run-008",
+      "pr": "PR-refund-limit-branch",
+      "rule": "tests-missing-critical-path",
+      "category": "tests",
+      "ai_action": "warn",
+      "human_action": "warn",
+      "lesson": "The warning was useful, but this rule needs more calibration."
+    }
+  ]
+}

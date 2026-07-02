@@ -45,10 +45,20 @@ jobs:
             --diff pr.diff \
             --out ai-review-verdict.json
 
-      - name: Validate AI verdict
+      - name: Validate AI verdict in shadow mode
         run: |
+          set +e
           python scripts/validate_ai_review.py ai-review-verdict.json > ai-review-summary.txt
+          status=$?
+          set -e
           cat ai-review-summary.txt
+          if [ "$status" -eq 1 ]; then
+            exit 1
+          fi
+          if [ "$status" -eq 2 ]; then
+            echo
+            echo "Shadow mode: the model requested block, but this rollout stage records only."
+          fi
 
       - name: Publish job summary
         if: always()
@@ -72,32 +82,19 @@ jobs:
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Comment on pull request
+      - name: Comment shadow review on pull request
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          {
-            echo "## AI review"
-            echo
-            if [ -f ai-review-summary.txt ]; then
-              cat ai-review-summary.txt
-            else
-              echo "The AI review did not produce a summary."
-            fi
-            echo
-            echo "<details>"
-            echo "<summary>Raw verdict JSON</summary>"
-            echo
-            echo '```json'
-            if [ -f ai-review-verdict.json ]; then
-              cat ai-review-verdict.json
-            else
-              echo '{}'
-            fi
-            echo '```'
-            echo
-            echo "</details>"
-          } > ai-review-comment.md
+          if [ -f ai-review-verdict.json ]; then
+            python scripts/render_ai_review_comment.py ai-review-verdict.json --mode shadow > ai-review-comment.md
+          else
+            {
+              echo "## Revision con IA"
+              echo
+              echo "El workflow no produjo un veredicto. Revisa los logs de GitHub Actions antes de confiar en esta ejecucion."
+            } > ai-review-comment.md
+          fi
           gh pr comment "$PR_NUMBER" --body-file ai-review-comment.md
