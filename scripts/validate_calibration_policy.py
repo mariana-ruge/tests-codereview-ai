@@ -14,15 +14,15 @@ REQUIRED_SECTIONS = (
     "## Impuesto de alucinacion",
     "## Zonas NO-IA",
     "## Protocolo de override",
-    "## Reglas promovidas",
+    "## Promocion del gate",
     "## Politica de cambio",
 )
 EXPECTED_TERMS = (
     "Auto-aprobar",
     "Consultivo",
-    "Bloqueante",
     "Requiere humano",
     "NO-IA",
+    "Bloqueante",
     "security-sql-injection",
     "refund-over-refund",
     "tests-missing-critical-path",
@@ -80,13 +80,13 @@ def main() -> int:
         print(f"- OK: {section.removeprefix('## ')}")
 
     print()
-    print("Acciones operativas detectadas:")
-    for action in ("Auto-aprobar", "Consultivo", "Bloqueante", "Requiere humano", "NO-IA"):
+    print("Acciones de confianza detectadas:")
+    for action in ("Auto-aprobar", "Consultivo", "Requiere humano", "NO-IA"):
         print(f"- {action}")
 
     print()
-    print("Reglas con decision explicita:")
-    for row in table_rows_after(text, "## Reglas promovidas"):
+    print("Decisiones del gate:")
+    for row in table_rows_after(text, "## Promocion del gate"):
         cells = [cell.strip(" `") for cell in row.strip("|").split("|")]
         if len(cells) >= 3:
             print(f"- {cells[0]} -> {cells[1]}")

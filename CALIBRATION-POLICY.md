@@ -15,11 +15,11 @@ La politica no reemplaza el criterio del equipo. Lo vuelve explicito, medible y 
 
 ## Matriz de confianza
 
-| Categoria | Evidencia actual | Costo de falso positivo | Costo de falso negativo | Accion |
+| Categoria | Evidencia actual | Costo de falso positivo | Costo de falso negativo | Accion de confianza |
 | --- | --- | --- | --- | --- |
-| `security-sql-injection` | Acuerdo alto en casos semilla y evidencia directa en diff. | Medio: puede frenar PRs hasta parametrizar queries. | Alto: puede dejar una vulnerabilidad explotable. | Bloqueante cuando la evidencia esta en el diff. |
-| `refund-over-refund` | Acuerdo alto en PR sensible de refunds. | Medio: puede exigir correccion o pruebas extra. | Alto: puede permitir perdida de dinero. | Bloqueante para rutas de dinero con evidencia directa. |
-| `tests-missing-critical-path` | Senal util, pero produjo un falso positivo de bloqueo. | Medio: ruido y friccion si bloquea demasiado. | Medio-alto si omite casos de dinero o seguridad. | Consultivo por defecto; bloquea solo con riesgo directo de dinero, refunds, autorizacion o seguridad. |
+| `security-sql-injection` | Acuerdo alto en casos semilla y evidencia directa en diff. | Medio: puede frenar PRs hasta parametrizar queries. | Alto: puede dejar una vulnerabilidad explotable. | Requiere humano si el contexto no esta completo; si la evidencia esta en el diff, puede promoverse a bloqueante. |
+| `refund-over-refund` | Acuerdo alto en PR sensible de refunds. | Medio: puede exigir correccion o pruebas extra. | Alto: puede permitir perdida de dinero. | Requiere humano en cambios de negocio; puede promoverse a bloqueante cuando el riesgo de saldo esta en el diff. |
+| `tests-missing-critical-path` | Senal util, pero produjo un falso positivo de bloqueo. | Medio: ruido y friccion si bloquea demasiado. | Medio-alto si omite casos de dinero o seguridad. | Consultivo por defecto. |
 | `docs-only-noise-control` | Acuerdo alto en cambios documentales. | Bajo. | Bajo. | Auto-aprobar si el diff no cambia comportamiento operativo. |
 | `dependency-hallucination` | Riesgo conocido por slopsquatting y paquetes inventados. | Bajo-medio: revisar dependencias toma tiempo. | Alto: puede introducir dependencia insegura o inexistente. | Requiere humano antes de aceptar dependencias nuevas. |
 
@@ -29,7 +29,6 @@ La politica no reemplaza el criterio del equipo. Lo vuelve explicito, medible y 
 | --- | --- | --- |
 | Auto-aprobar | La IA puede pasar el caso sin comentario accionable. | Cambios triviales o documentales sin impacto operativo. |
 | Consultivo | La IA comenta, pero no bloquea. | Senales utiles con falsos positivos tolerables. |
-| Bloqueante | El check puede fallar hasta corregir o justificar override. | Reglas de alto acuerdo y alto costo de falso negativo. |
 | Requiere humano | La IA puede asistir, pero no decide. | Cambios de alto riesgo o contexto incompleto. |
 | NO-IA | La IA no debe actuar como decisor. | Zonas donde el costo de error exige revision humana obligatoria. |
 
@@ -71,7 +70,9 @@ El flujo es:
 5. El humano valida `human_action`, `outcome`, `lesson` e `improvement`.
 6. El pipeline valida el historial con `scripts/build_regression_dataset.py`.
 
-## Reglas promovidas
+## Promocion del gate
+
+La accion de confianza dice como tratar la categoria. La promocion a bloqueante es un paso adicional del gate de CI: solo se aplica a reglas con evidencia suficiente, alto costo de falso negativo y una condicion verificable en el diff.
 
 | Regla | Estado | Razon |
 | --- | --- | --- |
