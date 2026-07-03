@@ -56,6 +56,31 @@ def table_rows_after(text: str, heading: str) -> list[str]:
     return rows
 
 
+def table_cells(row: str) -> list[str]:
+    return [cell.strip(" `") for cell in row.strip("|").split("|")]
+
+
+def decisions_by_category(text: str) -> dict[str, str]:
+    decisions: dict[str, str] = {}
+    for row in table_rows_after(text, "## Decision por categoria"):
+        cells = table_cells(row)
+        if len(cells) >= 5:
+            decisions[cells[0]] = cells[4]
+    return decisions
+
+
+def summarize_action(action: str) -> str:
+    if "Auto-aprobar" in action:
+        return "Auto-aprobar"
+    if "Consultivo" in action:
+        return "Consultivo"
+    if "promoverse a bloqueante" in action:
+        return "Bloqueante con evidencia"
+    if "Requiere humano" in action:
+        return "Requiere humano"
+    return action
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Valida CALIBRATION-POLICY.md.")
     parser.add_argument("policy", type=Path, help="Ruta a CALIBRATION-POLICY.md.")
@@ -95,14 +120,20 @@ def main() -> int:
         print(f"- {action}")
 
     print()
-    print("Matriz de confusion detectada:")
-    for term in ("VP", "FP", "FN", "VN"):
-        print(f"- {term}")
+    print("Matriz de confianza IA vs humano:")
+    print("Categoria | VP | FP | FN | VN | Decision")
+    decisions = decisions_by_category(text)
+    for row in table_rows_after(text, "## Matriz de confianza"):
+        cells = table_cells(row)
+        if len(cells) >= 5:
+            category, vp, fp, fn, vn = cells[:5]
+            action = summarize_action(decisions.get(category, "Sin decision"))
+            print(f"{category} | {vp} | {fp} | {fn} | {vn} | {action}")
 
     print()
     print("Decisiones del gate:")
     for row in table_rows_after(text, "## Promocion del gate"):
-        cells = [cell.strip(" `") for cell in row.strip("|").split("|")]
+        cells = table_cells(row)
         if len(cells) >= 3:
             print(f"- {cells[0]} -> {cells[1]}")
 
