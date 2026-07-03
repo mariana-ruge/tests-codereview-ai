@@ -22,6 +22,15 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install package
+        run: |
+          python -m pip install -e .
+
+      - name: Run unit tests
+        run: |
+          set -o pipefail
+          python -m unittest discover -s tests -p "test_*.py" -v 2>&1 | tee unit-tests-summary.txt
+
       - name: Build AI review regression report
         run: |
           python scripts/build_regression_dataset.py samples/ci/review-history.json > ai-review-regression-report.txt
@@ -72,33 +81,42 @@ jobs:
         if: always()
         run: |
           {
-            echo "## AI review"
+            echo "## Revision con IA"
             echo
             if [ -f ai-review-summary.txt ]; then
               cat ai-review-summary.txt
             else
-              echo "The AI review did not produce a summary."
+              echo "La revision con IA no produjo resumen."
             fi
             echo
-            echo "### Regression report"
+            echo "### Pruebas del servicio"
+            echo '```text'
+            if [ -f unit-tests-summary.txt ]; then
+              cat unit-tests-summary.txt
+            else
+              echo 'La suite de pruebas no produjo resumen.'
+            fi
+            echo '```'
+            echo
+            echo "### Reporte de regresion"
             echo '```text'
             if [ -f ai-review-regression-report.txt ]; then
               cat ai-review-regression-report.txt
             else
-              echo 'Regression report was not produced.'
+              echo 'El reporte de regresion no fue generado.'
             fi
             echo '```'
             echo
-            echo "### Calibration policy"
+            echo "### Politica de calibracion"
             echo '```text'
             if [ -f calibration-policy-summary.txt ]; then
               cat calibration-policy-summary.txt
             else
-              echo 'Calibration policy summary was not produced.'
+              echo 'El resumen de politica de calibracion no fue generado.'
             fi
             echo '```'
             echo
-            echo "### Review plan"
+            echo "### Plan de revision"
             echo '```json'
             if [ -f ai-review-plan.json ]; then
               cat ai-review-plan.json
@@ -107,7 +125,7 @@ jobs:
             fi
             echo '```'
             echo
-            echo "### Raw verdict"
+            echo "### Veredicto crudo"
             echo '```json'
             if [ -f ai-review-verdict.json ]; then
               cat ai-review-verdict.json

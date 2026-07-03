@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "payments-svc"
 version = "0.1.0"
-description = "API de pagos para demos de testing y code review con IA."
+description = "API de pagos para validar reglas de negocio, pruebas y revisiones automatizadas."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [

@@ -6,6 +6,8 @@ import unittest
 from payments_svc.db import (
     find_active_customers_by_country,
     find_customer_by_email,
+    search_customers_by_country_prefix,
+    search_customers_by_email_fragment,
 )
 
 
@@ -44,6 +46,20 @@ class TestAdversarialInputs(unittest.TestCase):
         payload = "' OR '1'='1"
 
         result = find_active_customers_by_country(self.connection, payload)
+
+        self.assertEqual([], result)
+
+    def test_email_fragment_search_treats_sqli_payload_as_literal_text(self) -> None:
+        payload = "' OR '1'='1"
+
+        result = search_customers_by_email_fragment(self.connection, payload)
+
+        self.assertEqual([], result)
+
+    def test_country_prefix_search_treats_sqli_payload_as_literal_text(self) -> None:
+        payload = "' OR '1'='1"
+
+        result = search_customers_by_country_prefix(self.connection, payload)
 
         self.assertEqual([], result)
 

@@ -15,15 +15,27 @@ def find_customer_by_email(
     connection: sqlite3.Connection,
     email: str,
 ) -> CustomerRecord | None:
-    query = (
-        "SELECT id, email, status "
-        "FROM customers "
-        "WHERE email = '" + email + "'"
-    )
-    row = connection.execute(query).fetchone()
+    row = connection.execute(
+        "SELECT id, email, status FROM customers WHERE email = ?",
+        (email,),
+    ).fetchone()
     if row is None:
         return None
     return CustomerRecord(id=row[0], email=row[1], status=row[2])
+
+
+def search_customers_by_email_fragment(
+    connection: sqlite3.Connection,
+    email_fragment: str,
+) -> list[CustomerRecord]:
+    cursor = connection.execute(
+        "SELECT id, email, status FROM customers WHERE email LIKE ?",
+        (f"%{email_fragment}%",),
+    )
+    return [
+        CustomerRecord(id=row[0], email=row[1], status=row[2])
+        for row in cursor.fetchall()
+    ]
 
 
 def find_active_customers_by_country(
@@ -40,32 +52,14 @@ def find_active_customers_by_country(
     ]
 
 
-def search_customers_by_email_fragment(
-    connection: sqlite3.Connection,
-    email_fragment: str,
-) -> list[CustomerRecord]:
-    query = (
-        "SELECT id, email, status "
-        "FROM customers "
-        "WHERE email LIKE '%" + email_fragment + "%'"
-    )
-    cursor = connection.execute(query)
-    return [
-        CustomerRecord(id=row[0], email=row[1], status=row[2])
-        for row in cursor.fetchall()
-    ]
-
-
 def search_customers_by_country_prefix(
     connection: sqlite3.Connection,
     country_prefix: str,
 ) -> list[CustomerRecord]:
-    query = (
-        "SELECT id, email, status "
-        "FROM customers "
-        "WHERE country LIKE '" + country_prefix + "%'"
+    cursor = connection.execute(
+        "SELECT id, email, status FROM customers WHERE country LIKE ?",
+        (f"{country_prefix}%",),
     )
-    cursor = connection.execute(query)
     return [
         CustomerRecord(id=row[0], email=row[1], status=row[2])
         for row in cursor.fetchall()
@@ -80,6 +74,8 @@ def count_customers_for_status(
     if status not in allowed_statuses:
         raise ValueError("unsupported customer status")
 
-    query = "SELECT COUNT(*) FROM customers WHERE status = '" + status + "'"
-    row = connection.execute(query).fetchone()
+    row = connection.execute(
+        "SELECT COUNT(*) FROM customers WHERE status = ?",
+        (status,),
+    ).fetchone()
     return int(row[0])
