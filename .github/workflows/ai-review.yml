@@ -27,6 +27,11 @@ jobs:
           python scripts/build_regression_dataset.py samples/ci/review-history.json > ai-review-regression-report.txt
           cat ai-review-regression-report.txt
 
+      - name: Validate calibration policy
+        run: |
+          python scripts/validate_calibration_policy.py CALIBRATION-POLICY.md > calibration-policy-summary.txt
+          cat calibration-policy-summary.txt
+
       - name: Extract pull request diff
         run: |
           git fetch origin "${{ github.base_ref }}" --depth=1
@@ -81,6 +86,15 @@ jobs:
               cat ai-review-regression-report.txt
             else
               echo 'Regression report was not produced.'
+            fi
+            echo '```'
+            echo
+            echo "### Calibration policy"
+            echo '```text'
+            if [ -f calibration-policy-summary.txt ]; then
+              cat calibration-policy-summary.txt
+            else
+              echo 'Calibration policy summary was not produced.'
             fi
             echo '```'
             echo
