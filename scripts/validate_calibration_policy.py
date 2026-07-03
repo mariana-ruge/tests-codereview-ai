@@ -18,6 +18,10 @@ REQUIRED_SECTIONS = (
     "## Politica de cambio",
 )
 EXPECTED_TERMS = (
+    "VP",
+    "FP",
+    "FN",
+    "VN",
     "Auto-aprobar",
     "Consultivo",
     "Requiere humano",
@@ -83,6 +87,11 @@ def main() -> int:
     print("Acciones de confianza detectadas:")
     for action in ("Auto-aprobar", "Consultivo", "Requiere humano", "NO-IA"):
         print(f"- {action}")
+
+    print()
+    print("Matriz de confusion detectada:")
+    for term in ("VP", "FP", "FN", "VN"):
+        print(f"- {term}")
 
     print()
     print("Decisiones del gate:")

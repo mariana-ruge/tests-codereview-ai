@@ -15,12 +15,31 @@ La politica no reemplaza el criterio del equipo. Lo vuelve explicito, medible y 
 
 ## Matriz de confianza
 
-| Categoria | Evidencia actual | Costo de falso positivo | Costo de falso negativo | Accion de confianza |
+Esta matriz resume el cruce entre lo que dijo la IA y la decision humana. Los conteos vienen de los casos semilla del curso y del historial de regresion disponible al cierre.
+
+| Categoria | VP | FP | FN | VN | Lectura |
+| --- | ---: | ---: | ---: | ---: | --- |
+| `security-sql-injection` | 1 | 0 | 0 | 0 | La IA detecto correctamente el riesgo cuando hubo evidencia directa. |
+| `refund-over-refund` | 1 | 0 | 0 | 0 | La IA bloqueo correctamente una ruta que podia exceder el saldo reembolsable. |
+| `tests-missing-critical-path` | 0 | 1 | 0 | 0 | La senal es util, pero el modelo fue mas estricto que el humano. |
+| `docs-only-noise-control` | 0 | 0 | 0 | 1 | La IA paso correctamente un cambio documental sin impacto operativo. |
+| `dependency-hallucination` | 0 | 0 | 0 | 0 | Riesgo conocido por auditorias previas; requiere humano hasta tener mas casos. |
+
+Leyenda:
+
+- VP: verdadero positivo, la IA marco un problema y el humano estuvo de acuerdo.
+- FP: falso positivo, la IA marco un problema pero el humano no lo habria bloqueado.
+- FN: falso negativo, la IA dejo pasar algo que el humano habria marcado.
+- VN: verdadero negativo, la IA paso algo que el humano tambien pasaria.
+
+## Decision por categoria
+
+| Categoria | Evidencia actual | Costo de FP | Costo de FN | Accion de confianza |
 | --- | --- | --- | --- | --- |
-| `security-sql-injection` | Acuerdo alto en casos semilla y evidencia directa en diff. | Medio: puede frenar PRs hasta parametrizar queries. | Alto: puede dejar una vulnerabilidad explotable. | Requiere humano si el contexto no esta completo; si la evidencia esta en el diff, puede promoverse a bloqueante. |
-| `refund-over-refund` | Acuerdo alto en PR sensible de refunds. | Medio: puede exigir correccion o pruebas extra. | Alto: puede permitir perdida de dinero. | Requiere humano en cambios de negocio; puede promoverse a bloqueante cuando el riesgo de saldo esta en el diff. |
-| `tests-missing-critical-path` | Senal util, pero produjo un falso positivo de bloqueo. | Medio: ruido y friccion si bloquea demasiado. | Medio-alto si omite casos de dinero o seguridad. | Consultivo por defecto. |
-| `docs-only-noise-control` | Acuerdo alto en cambios documentales. | Bajo. | Bajo. | Auto-aprobar si el diff no cambia comportamiento operativo. |
+| `security-sql-injection` | VP alto para evidencia directa. | Medio: puede frenar PRs hasta parametrizar queries. | Alto: puede dejar una vulnerabilidad explotable. | Requiere humano si el contexto no esta completo; si la evidencia esta en el diff, puede promoverse a bloqueante. |
+| `refund-over-refund` | VP alto en PR sensible de refunds. | Medio: puede exigir correccion o pruebas extra. | Alto: puede permitir perdida de dinero. | Requiere humano en cambios de negocio; puede promoverse a bloqueante cuando el riesgo de saldo esta en el diff. |
+| `tests-missing-critical-path` | FP documentado. | Medio: ruido y friccion si bloquea demasiado. | Medio-alto si omite casos de dinero o seguridad. | Consultivo por defecto. |
+| `docs-only-noise-control` | VN documentado. | Bajo. | Bajo. | Auto-aprobar si el diff no cambia comportamiento operativo. |
 | `dependency-hallucination` | Riesgo conocido por slopsquatting y paquetes inventados. | Bajo-medio: revisar dependencias toma tiempo. | Alto: puede introducir dependencia insegura o inexistente. | Requiere humano antes de aceptar dependencias nuevas. |
 
 ## Acciones operativas
