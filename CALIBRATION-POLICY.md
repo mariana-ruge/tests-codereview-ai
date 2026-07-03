@@ -13,6 +13,23 @@ La politica no reemplaza el criterio del equipo. Lo vuelve explicito, medible y 
 - Criterios de promocion: `docs/promotion-criteria.md`.
 - Gate de CI: `.github/workflows/ai-review.yml`.
 
+## Trazabilidad del curso
+
+Esta politica no reemplaza los artefactos anteriores. Los usa como evidencia y los convierte en decisiones operativas.
+
+| Bloque | Artefactos mantenidos | Como alimenta la politica |
+| --- | --- | --- |
+| Catalogo de fallos | `FAILURE-MODES.md` | Define que riesgos importan en `payments-svc`. |
+| Suite endurecida | `tests/`, `scripts/mutation_domain.sh` | Da respaldo a reglas sobre comportamiento critico y pruebas faltantes. |
+| Prompts versionados | `prompts/*.md` | Mantiene visible que instrucciones producen los veredictos. |
+| Contrato JSON | `schemas/ai-review.schema.json`, `scripts/validate_ai_review.py` | Hace que el veredicto sea consumible por CI. |
+| Seguridad estatica | `semgrep-rules/`, `docs/semgrep-triage.md` | Aporta reglas y triage para riesgos de seguridad. |
+| Dependencias y alucinacion | `docs/slopsquatting-requests-ai-utils.md`, `scripts/audit_dependencies.py` | Alimenta el impuesto de alucinacion y la revision humana de dependencias. |
+| Superficie LLM | `docs/llm-support-audit.md`, `tests/test_llm_support.py` | Define zonas donde prompt injection o contexto incompleto requieren cautela. |
+| Gate en CI | `.github/workflows/ai-review.yml` | Ejecuta el revisor, el reporte de regresion y la validacion de politica. |
+| Rollout y costo | `docs/promotion-criteria.md`, `docs/cost-latency-report.md` | Define como promover reglas y controlar modelo, costo y latencia. |
+| Flywheel de datos | `samples/ci/review-history.json`, `docs/override-protocol.md` | Convierte errores y overrides en casos de regresion. |
+
 ## Matriz de confianza
 
 Esta matriz resume el cruce entre lo que dijo la IA y la decision humana. Los conteos vienen de los casos semilla del curso y del historial de regresion disponible al cierre.

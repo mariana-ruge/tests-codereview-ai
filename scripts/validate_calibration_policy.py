@@ -9,6 +9,7 @@ from pathlib import Path
 REQUIRED_SECTIONS = (
     "## Proposito",
     "## Insumos usados",
+    "## Trazabilidad del curso",
     "## Matriz de confianza",
     "## Acciones operativas",
     "## Impuesto de alucinacion",
@@ -31,6 +32,11 @@ EXPECTED_TERMS = (
     "refund-over-refund",
     "tests-missing-critical-path",
     "docs-only-noise-control",
+    "FAILURE-MODES.md",
+    "tests/",
+    "prompts/*.md",
+    "semgrep-rules/",
+    "review-history.json",
 )
 
 
@@ -99,6 +105,15 @@ def main() -> int:
         cells = [cell.strip(" `") for cell in row.strip("|").split("|")]
         if len(cells) >= 3:
             print(f"- {cells[0]} -> {cells[1]}")
+
+    print()
+    print()
+    print("Trazabilidad del curso: presente")
+    print("- Catalogo de fallos")
+    print("- Suite endurecida")
+    print("- Prompts versionados")
+    print("- Seguridad estatica")
+    print("- Flywheel de datos")
 
     print()
     print("Zonas NO-IA: presentes")
