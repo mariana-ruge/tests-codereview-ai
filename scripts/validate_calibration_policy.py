@@ -9,7 +9,7 @@ from pathlib import Path
 REQUIRED_SECTIONS = (
     "## Proposito",
     "## Insumos usados",
-    "## Trazabilidad del curso",
+    "## Trazabilidad operativa",
     "## Matriz de confianza",
     "## Acciones operativas",
     "## Impuesto de alucinacion",
@@ -108,7 +108,7 @@ def main() -> int:
 
     print()
     print()
-    print("Trazabilidad del curso: presente")
+    print("Trazabilidad operativa: presente")
     print("- Catalogo de fallos")
     print("- Suite endurecida")
     print("- Prompts versionados")

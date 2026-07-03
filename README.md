@@ -1,10 +1,10 @@
 # payments-svc
 
-API de pagos en Python para el curso de Platzi sobre testing y code review con IA.
+API de pagos en Python para validar reglas de negocio, pruebas y revisiones automatizadas en un servicio pequeno y realista.
 
-El proyecto esta preparado para avanzar por incrementos de clase. Para el Modulo C parte de una base limpia de producto: `amounts.py`, `refunds.py`, `auth.py` y `api.py` tienen contratos confirmados y tests unitarios.
+El servicio expone operaciones basicas de pagos y reembolsos. Los modulos `amounts.py`, `refunds.py`, `auth.py` y `api.py` tienen contratos confirmados y tests unitarios.
 
-Los artefactos especificos del revisor de PR del Modulo B se dejan fuera de esta rama para que las demos de auditoria de codigo existente empiecen sin ruido.
+El repositorio incluye automatizaciones de revision, reglas de seguridad y documentos operativos para gobernar el uso del revisor con IA.
 
 ## Instalacion
 

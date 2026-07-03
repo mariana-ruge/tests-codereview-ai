@@ -13,7 +13,7 @@ La politica no reemplaza el criterio del equipo. Lo vuelve explicito, medible y 
 - Criterios de promocion: `docs/promotion-criteria.md`.
 - Gate de CI: `.github/workflows/ai-review.yml`.
 
-## Trazabilidad del curso
+## Trazabilidad operativa
 
 Esta politica no reemplaza los artefactos anteriores. Los usa como evidencia y los convierte en decisiones operativas.
 
@@ -32,7 +32,7 @@ Esta politica no reemplaza los artefactos anteriores. Los usa como evidencia y l
 
 ## Matriz de confianza
 
-Esta matriz resume el cruce entre lo que dijo la IA y la decision humana. Los conteos vienen de los casos semilla del curso y del historial de regresion disponible al cierre.
+Esta matriz resume el cruce entre lo que dijo la IA y la decision humana. Los conteos vienen de los casos semilla y del historial de regresion disponible al cierre.
 
 | Categoria | VP | FP | FN | VN | Lectura |
 | --- | ---: | ---: | ---: | ---: | --- |
