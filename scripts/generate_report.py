@@ -86,6 +86,11 @@ def build_report(junit_path: str) -> str:
 
 
 def main() -> None:
+    # La consola de Windows (cp1252) no puede imprimir los emoji del reporte;
+    # forzar UTF-8 evita un UnicodeEncodeError al correr esto localmente.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+
     if len(sys.argv) != 3:
         raise SystemExit("Uso: python scripts/generate_report.py <junit.xml> <salida.md>")
 
