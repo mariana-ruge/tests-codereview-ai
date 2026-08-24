@@ -8,4 +8,6 @@ htmlcov/
 dist/
 build/
 *.egg-info/
+pytest-report.xml
+reporte de acuerdo.md
 
