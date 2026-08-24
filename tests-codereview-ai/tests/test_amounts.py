@@ -32,6 +32,7 @@ from payments_svc.amounts import (
     round_money_for_currency,
     total_with_fee,
     validate_amount,
+    validate_non_negative_amount,
 )
 
 
@@ -272,6 +273,54 @@ class NormalizeCurrencyEmptyAndMissingShareMessageTests(unittest.TestCase):
     def test_normalize_currency_rejects_whitespace_only_string_with_required_message(self) -> None:
         with self.assertRaisesRegex(CurrencyError, "currency is required"):
             normalize_currency("   ")
+
+
+class ValidateNonNegativeAmountGuardsNaNAndInfinityTests(unittest.TestCase):
+    """Mata-mutantes: validate_non_negative_amount debe rechazar NaN/Infinity
+    igual que validate_amount, pero sigue aceptando cero (a diferencia de
+    validate_amount / FR-03) porque protege acumuladores como
+    `already_refunded`, que si pueden partir en 0.
+
+    No corresponde a un nodo de FAILURES_MODE.md (ese catalogo cubre solo
+    amounts.py vs el resto del contrato de negocio); se agrega porque
+    mutation testing (mutatest) encontro que el guard `if not
+    amount.is_finite(): raise AmountError(...)` de validate_non_negative_amount
+    (linea ~135) sobrevivia sin tests que lo ejercitaran: ningun test previo
+    llamaba esta funcion con NaN/Infinity, asi que borrar ese `if` no rompia
+    ninguna suite existente.
+    """
+
+    def test_validate_non_negative_amount_rejects_nan(self) -> None:
+        with self.assertRaises(AmountError):
+            validate_non_negative_amount(Decimal("NaN"))
+
+    def test_validate_non_negative_amount_rejects_positive_infinity(self) -> None:
+        with self.assertRaises(AmountError):
+            validate_non_negative_amount(Decimal("Infinity"))
+
+    def test_validate_non_negative_amount_rejects_negative_infinity(self) -> None:
+        with self.assertRaises(AmountError):
+            validate_non_negative_amount(Decimal("-Infinity"))
+
+    def test_validate_non_negative_amount_rejects_negative(self) -> None:
+        with self.assertRaises(AmountError):
+            validate_non_negative_amount(Decimal("-0.01"))
+
+    def test_validate_non_negative_amount_rejects_amount_beyond_max(self) -> None:
+        with self.assertRaises(AmountError):
+            validate_non_negative_amount(Decimal("100000.01"))
+
+    def test_validate_non_negative_amount_accepts_amount_at_the_max_boundary(self) -> None:
+        # MAX_AMOUNT es inclusivo (guard es "> MAX_AMOUNT"); mata la mutacion
+        # Gt -> GtE, que rechazaria incorrectamente el limite exacto.
+        validate_non_negative_amount(Decimal("100000.00"))
+
+    def test_validate_non_negative_amount_accepts_zero(self) -> None:
+        # A diferencia de validate_amount (FR-03), el acumulador si puede ser 0.
+        validate_non_negative_amount(Decimal("0"))
+
+    def test_validate_non_negative_amount_accepts_positive_amount(self) -> None:
+        validate_non_negative_amount(Decimal("10.00"))
 
 
 class CanaryDeliberateFailureTests(unittest.TestCase):
