@@ -36,7 +36,26 @@ jobs:
         run: python scripts/smoke_test.py
 
       - name: Run tests
+        id: run_tests
         # test_canary_intentionally_fails esta disenado para fallar siempre
         # (existe para validar que el runner reporta fallos correctamente),
         # asi que se excluye del gate normal de CI. Ver tests/test_amounts.py.
-        run: pytest tests/ -k "not test_canary_intentionally_fails" -v
+        # continue-on-error para poder generar el reporte incluso si algo falla;
+        # el job igual se marca en rojo mas abajo si esto fallo.
+        continue-on-error: true
+        run: pytest tests/ -k "not test_canary_intentionally_fails" -v --junitxml=pytest-report.xml
+
+      - name: Generar reporte de acuerdo.md
+        if: always()
+        run: python scripts/generate_report.py pytest-report.xml "reporte de acuerdo.md"
+
+      - name: Publicar reporte como artifact descargable
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-de-acuerdo (Python ${{ matrix.python-version }})
+          path: reporte de acuerdo.md
+
+      - name: Fallar el job si los tests fallaron
+        if: steps.run_tests.outcome == 'failure'
+        run: exit 1
